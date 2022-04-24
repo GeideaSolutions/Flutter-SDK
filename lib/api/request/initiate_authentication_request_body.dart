@@ -11,7 +11,7 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   final String? _cardNumber;
 
   final String? callbackUrl;
-  final String? returnUrl;
+  String? returnUrl;
   final String? merchantReferenceID;
   final bool? cardOnFile;
   final String? paymentOperation;
@@ -21,9 +21,12 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   final String? paymentIntentId;
 
   InitiateAuthenticationRequestBody(this._amount, this._currency,
-      this._cardNumber, {this.callbackUrl, this.returnUrl,
+      this._cardNumber, {this.callbackUrl,
       this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
-        this.billing, this.shipping, this.customerEmail, this.paymentIntentId});
+        this.billing, this.shipping, this.customerEmail, this.paymentIntentId})
+  {
+    returnUrl = "https://returnurl.com";
+  }
 
   @override
   Map<String, Object?> paramsMap() {

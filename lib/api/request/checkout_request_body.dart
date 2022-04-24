@@ -50,7 +50,6 @@ class CheckoutRequestBody extends BaseRequestBody {
     initiateAuthenticationRequestBody = InitiateAuthenticationRequestBody(
        amount, currency, _paymentCard!.number,
         callbackUrl: callbackUrl,
-        returnUrl: returnUrl,
         cardOnFile: cardOnFile,
         merchantReferenceID: merchantReferenceID,
         paymentOperation: paymentOperation,
@@ -71,7 +70,6 @@ class CheckoutRequestBody extends BaseRequestBody {
         billing: billing,
         shipping: shipping,
         customerEmail: customerEmail,
-        returnUrl: returnUrl,
         paymentIntentId: paymentIntentId);
   }
 

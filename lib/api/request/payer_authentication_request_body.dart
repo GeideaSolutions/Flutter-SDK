@@ -20,14 +20,17 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   final Address? billing;
   final Address? shipping;
   final String? customerEmail;
-  final String? returnUrl;
+  String? returnUrl;
   final String? paymentIntentId;
 
   PayerAuthenticationRequestBody(
       this._amount, this._currency, this._paymentMethod, this._orderId,
       {this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
         this.callbackUrl, this.billing, this.shipping, this.customerEmail,
-        this.returnUrl, this.paymentIntentId});
+        this.paymentIntentId})
+  {
+    returnUrl = "https://returnurl.com";
+  }
 
   @override
   Map<String, Object?> paramsMap() {
