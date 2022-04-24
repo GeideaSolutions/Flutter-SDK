@@ -45,7 +45,6 @@ class CheckoutOptions {
         this.payButtonColor,
         this.cancelButtonColor})
   {
-    callbackUrl = "https://returnurl.com";
     returnUrl = "https://returnurl.com";
     backgroundColor ??= const Color(0xff2c2222);
     cardColor ??= const Color(0xffff4d00);
