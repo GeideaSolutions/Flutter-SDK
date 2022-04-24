@@ -1,39 +1,99 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Overview
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+The purpose of this Integration guide is to serve as technical documentation for merchants who wish to integrate the Geidea Payment plugin for Flutter so that they can use Payment Gateway services in their application.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+This guide describes the functionality and APIs provided by the plugin and different approaches to integrating the plugin and customizing it.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
-## Features
+# Integration
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Please install the prerequisites first, then you can either integrate the plugin using
 
-## Getting started
+1. **Simple** integration – 	The plugin hosts the entire UI flow and performs all transactions. A “turnkey” solution that requires minimal setup. You simply call a method to start the Payment flow and then receive your Order after everything is ready.
+2. **Custom** integration – the Merchant app hosts the entire UI flow (payment form, authentication) and performs all transactions by calling the Direct APIs through the plugin.
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
 
-## Usage
+## Prerequisites
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+1 - Add the following to your **<code>pubspec.yaml</code></strong> file under dependencies
 
-```dart
-const like = 'sample';
+
+```
+     geideapay:
+    	git:
+      	url: https://github.com/ahmed-elliethy/geideapay.git
+      	ref: main # branch name
 ```
 
-## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+2 - Change the **<code>minSdkVersion </code></strong>in  android/app/build.gradle file to be <strong>19</strong>
+
+
+```
+     android {
+       defaultConfig {
+     	minSdkVersion 19
+       }
+     }
+
+```
+
+
+
+1. Simple integration
+
+   1 - add the following imports
+
+
+    ```
+    import 'package:geideapay/common/geidea.dart';
+    import 'package:geideapay/widgets/checkout/checkout_options.dart';
+    import 'package:geideapay/api/response/order_api_response.dart';
+    ```
+
+
+
+    2 - Define an instance of the plugin
+
+
+    ```
+     final plugin = GeideapayPlugin();
+    ```
+
+
+
+    3 - Call the initialize function for the plugin and provide it with the 
+
+
+    ```
+     @override
+      void initState() {
+    plugin.initialize(publicKey: YourGeideaPublicKey, apiPassword: YourGeideaApiPassword);
+    	super.initState();
+      }
+    ```
+
+
+
+    4 - Create a **<code>CheckoutOptions</code></strong> object. The fields of this object are defined in the following table
+    5 - Call the checkout function from the plugin instance
+
+
+```
+       	OrderApiResponse response =
+      	await plugin.checkout(
+          	context: context, checkoutOptions: checkoutOptions);
+      	print('Response = $response');
+```
+
+
+
+    The displayed checkout screen is simial to the following image
+
+
+
+
+<p id="gdcalert3" ><span style="color: red; font-weight: bold">>>>>>  gd2md-html alert: inline image link here (to images/image3.png). Store image on your image server and adjust path/filename/extension if necessary. </span><br>(<a href="#">Back to top</a>)(<a href="#gdcalert4">Next alert</a>)<br><span style="color: red; font-weight: bold">>>>>> </span></p>
+
+
+![alt_text](images/image3.png "image_tooltip")
