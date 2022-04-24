@@ -13,8 +13,8 @@ import 'package:geideapay/models/address.dart';
 class CheckoutOptions {
   final String amount;
   final String? currency;
-  final String? callbackUrl;
-  final String? returnUrl;
+  String? callbackUrl;
+  String? returnUrl;
   final String? merchantReferenceID;
   bool? cardOnFile;
   final String? paymentOperation;
@@ -30,9 +30,7 @@ class CheckoutOptions {
   Color? cancelButtonColor;
 
   CheckoutOptions(this.amount, this.currency,
-      {this.callbackUrl,
-      this.returnUrl,
-      this.cardOnFile,
+      {this.cardOnFile,
       this.merchantReferenceID,
       this.paymentOperation,
       this.billing,
@@ -45,6 +43,8 @@ class CheckoutOptions {
       this.payButtonColor,
       this.cancelButtonColor})
   {
+    callbackUrl = "https://returnurl.com";
+    returnUrl = "https://returnurl.com";
     backgroundColor ??= const Color(0xff2c2222);
     cardColor ??= const Color(0xffff4d00);
     textColor ??= const Color(0xffffffff);
