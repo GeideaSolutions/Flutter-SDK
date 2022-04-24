@@ -30,18 +30,20 @@ class CheckoutOptions {
   Color? cancelButtonColor;
 
   CheckoutOptions(this.amount, this.currency,
-      {this.cardOnFile,
-      this.merchantReferenceID,
-      this.paymentOperation,
-      this.billing,
-      this.shipping,
-      this.customerEmail,
-      this.paymentIntentId,
-      this.backgroundColor,
-      this.cardColor,
-      this.textColor,
-      this.payButtonColor,
-      this.cancelButtonColor})
+      {
+        this.callbackUrl,
+        this.cardOnFile,
+        this.merchantReferenceID,
+        this.paymentOperation,
+        this.billing,
+        this.shipping,
+        this.customerEmail,
+        this.paymentIntentId,
+        this.backgroundColor,
+        this.cardColor,
+        this.textColor,
+        this.payButtonColor,
+        this.cancelButtonColor})
   {
     callbackUrl = "https://returnurl.com";
     returnUrl = "https://returnurl.com";
