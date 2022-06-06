@@ -107,8 +107,12 @@ class GeideapayPlugin {
         checkoutOptions.cardOnFile = creditCardScreen.saveCard;
         CheckoutRequestBody checkoutRequestBody =
         CheckoutRequestBody(checkoutOptions, creditCardScreen.paymentCard);
-
-        return _Geideapay(publicKey, apiPassword).checkout(checkoutRequestBody: checkoutRequestBody, context: context);
+        try{
+          return _Geideapay(publicKey, apiPassword).checkout(checkoutRequestBody: checkoutRequestBody, context: context);
+        }
+        catch(e){
+          throw e;
+        }
       }
     else{
       return OrderApiResponse(responseCode: "-1", detailedResponseCode: "Payment cancelled");
@@ -237,21 +241,31 @@ class _Geideapay {
       ) async {
 
     try {
+      print(checkoutRequestBody.initiateAuthenticationRequestBody);
       AuthenticationApiResponse authenticationApiResponse =
       await initiateAuthentication(initiateAuthenticationRequestBody:
       checkoutRequestBody.initiateAuthenticationRequestBody);
+      print(authenticationApiResponse);
 
+      if(authenticationApiResponse.orderId == null)
+        {
+          throw("Order ID is null");
+        }
       checkoutRequestBody.updatePayerAuthenticationRequestBody(authenticationApiResponse.orderId);
 
+      print(checkoutRequestBody.payerAuthenticationRequestBody);
       AuthenticationApiResponse payerAuthenticationApiResponse =
       await payerAuthentication(payerAuthenticationRequestBody:
           checkoutRequestBody.payerAuthenticationRequestBody, context: context);
+      print(payerAuthenticationApiResponse);
 
       checkoutRequestBody.updatePayDirectRequestBody(payerAuthenticationApiResponse.threeDSecureId);
 
+      print(checkoutRequestBody.payDirectRequestBody);
       OrderApiResponse orderApiResponse =
       await directPay(payDirectRequestBody: checkoutRequestBody.payDirectRequestBody);
-
+      print(orderApiResponse);
+      
       return orderApiResponse;
 
     } catch (e) {

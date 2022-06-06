@@ -16,13 +16,13 @@ class CheckoutOptions {
   String? callbackUrl;
   String? returnUrl;
   final String? merchantReferenceID;
-  bool? cardOnFile;
-  final String? paymentOperation;
-  final Address? billing;
-  final Address? shipping;
+  bool? cardOnFile, showBilling, showShipping, showSaveCard;
+  String? paymentOperation;
+  Address? billing;
+  Address? shipping;
   final String? customerEmail;
   final String? paymentIntentId;
-
+  String? lang;
   Color? backgroundColor;
   Color? cardColor;
   Color? textColor;
@@ -43,13 +43,25 @@ class CheckoutOptions {
         this.cardColor,
         this.textColor,
         this.payButtonColor,
-        this.cancelButtonColor})
+        this.cancelButtonColor,
+        this.lang,
+      this.showBilling,
+      this.showShipping,
+      this.showSaveCard})
   {
+    if(paymentOperation != null && paymentOperation!.startsWith("Default"))
+      {
+        paymentOperation = null;
+      }
     returnUrl = "https://returnurl.com";
     backgroundColor ??= const Color(0xff2c2222);
     cardColor ??= const Color(0xffff4d00);
     textColor ??= const Color(0xffffffff);
     payButtonColor ??= const Color(0xffff4d00);
     cancelButtonColor ??= const Color(0xff878787);
+    lang ??= "EN";
+    showBilling ??= false;
+    showShipping ??= false;
+    showSaveCard ??= false;
   }
 }

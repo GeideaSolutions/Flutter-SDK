@@ -40,4 +40,7 @@ class PayDirectRequestBody extends BaseRequestBody {
 
     return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
   }
+  toString() {
+    return 'PayDirectRequestBody{_threeDSecureId: $_threeDSecureId, _orderId: $_orderId, _amount: $_amount, _currency: $_currency, _paymentMethod: $_paymentMethod, paymentOperation: $paymentOperation, callbackUrl: $callbackUrl, paymentIntentId: $paymentIntentId}';
+  }
 }

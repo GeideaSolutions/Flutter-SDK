@@ -53,4 +53,8 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
     params[BaseRequestBody.fieldPaymentIntentId] = paymentIntentId;
     return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
   }
+
+  toString() {
+    return 'InitiateAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _cardNumber: $_cardNumber, callbackUrl: $callbackUrl, returnUrl: $returnUrl, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+  }
 }

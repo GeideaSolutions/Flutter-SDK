@@ -12,6 +12,16 @@ import 'package:geideapay/widgets/checkout/credit_card_brand.dart';
 import 'package:geideapay/widgets/checkout/credit_card_form.dart';
 import 'package:geideapay/widgets/checkout/credit_card_model.dart';
 import 'package:geideapay/widgets/checkout/credit_card_widget.dart' as credit_card_widget;
+import '../../common/credit_card_type_detector.dart';
+import '../../models/address.dart';
+
+const Map<CreditCardType, String?> CreditCardTypeIconAsset = <CreditCardType, String?>{
+  CreditCardType.visa: 'icons/visa.png',
+  CreditCardType.amex: 'icons/amex.png',
+  CreditCardType.mastercard: 'icons/mastercard.png',
+  CreditCardType.discover: 'icons/discover.png',
+  CreditCardType.unknown: null,
+};
 
 class CreditCardScreen extends StatefulWidget {
 
@@ -33,6 +43,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  var cardType;
+
   @override
   void initState() {
     border = OutlineInputBorder(
@@ -46,6 +58,18 @@ class CreditCardScreenState extends State<CreditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if(widget.checkoutOptions.lang == "EN")
+      {
+        return buildCreditCardScreen_EN(context);
+      }
+    else
+      {
+        return buildCreditCardScreen_AR(context);
+      }
+  }
+
+  Widget buildCreditCardScreen_EN(BuildContext context)
+  {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
@@ -56,41 +80,22 @@ class CreditCardScreenState extends State<CreditCardScreen> {
               const SizedBox(
                 height: 30,
               ),
-              CreditCardWidget(
-                glassmorphismConfig: null,
-                cardNumber: widget.paymentCard.number,
-                expiryYear: widget.paymentCard.expiryYear,
-                expiryMonth: widget.paymentCard.expiryMonth,
-                cardHolderName: widget.paymentCard.name,
-                cvvCode: widget.paymentCard.cvc,
-                showBackView: isCvvFocused,
-                obscureCardNumber: true,
-                obscureCardCvv: true,
-                isHolderNameVisible: true,
-                cardBgColor: widget.checkoutOptions.cardColor!,
-                backgroundImage:
-                useBackgroundImage ? 'assets/card_bg.png' : null,
-                isSwipeGestureEnabled: true,
-                onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
-                customCardTypeIcons: <CustomCardTypeIcon>[
-                  CustomCardTypeIcon(
-                    cardType: credit_card_widget.CardType.mastercard,
-                    cardImage: Image.asset(
-                      'assets/mastercard.png',
-                      height: 48,
-                      width: 48,
-                    ),
-                  ),
-                ],
-              ),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      Padding(
+                          padding: const EdgeInsets.only(left: 16, top: 10),
+                          child:
+                          Text("Payment", style: TextStyle(
+                              fontSize: 16.0, fontWeight: FontWeight.bold,
+                              color: widget.checkoutOptions.textColor))
+                      ),
                       CreditCardForm(
                         formKey: formKey,
                         obscureCvv: true,
-                        obscureNumber: true,
+                        obscureNumber: false,
                         cardNumber: widget.paymentCard.number,
                         cvvCode: widget.paymentCard.cvc,
                         isHolderNameVisible: true,
@@ -101,6 +106,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                         expiryMonth: widget.paymentCard.expiryMonth,
                         themeColor: Colors.blue,
                         textColor: Colors.white,
+                        onChange: cardNumberChange,
                         cardNumberDecoration: InputDecoration(
                           labelText: 'Number',
                           hintText: 'XXXX XXXX XXXX XXXX',
@@ -108,6 +114,18 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                           labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
                           focusedBorder: border,
                           enabledBorder: border,
+                            suffixIcon: (cardType != null &&
+                                CreditCardTypeIconAsset[cardType] != null) ?
+                            Container(
+                              margin: const EdgeInsets.all(12),
+                              child:
+                            Image.asset(
+                              CreditCardTypeIconAsset[cardType]!,
+                              height: 32,
+                              width: 32,
+                              package: 'geideapay',
+                            )):
+                            Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
                         ),
                         expiryDateDecoration: InputDecoration(
                           hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
@@ -137,7 +155,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      Row(
+                      (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
+                          ?                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           const Text(
@@ -157,10 +176,14 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                             }),
                           ),
                         ],
-                      ),
+                      ) : Container(),
                       const SizedBox(
                         height: 10,
                       ),
+                      (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
+                          ? addressForm_EN(true) : Container(),
+                      (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
+                          ? addressForm_EN(false) : Container(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -221,25 +244,569 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                           ),
                         ],
                       ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(
-                          image: AssetImage('assets/logo.png', package: 'geideapay'),
-                        width: 30,
-                        fit: BoxFit.fill),
-                      Text(
-                        'Powered by Geidea',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      )
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image(
+                              image: AssetImage('assets/logo.png', package: 'geideapay'),
+                              width: 30,
+                              fit: BoxFit.fill),
+                          Text(
+                            'Powered by Geidea',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
                     ],
                   ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  addressForm_EN(bool isBilling) {
+    return Padding(
+        padding: const EdgeInsets.all(16),
+        child:
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 20),
+                child:
+                Text(isBilling? "Billing address": "Shipping address", style: TextStyle(
+                    fontSize: 16.0, fontWeight: FontWeight.bold,
+                    color: widget.checkoutOptions.textColor))
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: TextFormField(
+                style: TextStyle(
+                  color: widget.checkoutOptions.textColor,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Country Code',
+                  labelText: 'Country Code',
+                  focusedBorder: border,
+                  enabledBorder: border,
+                  hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                  labelStyle: TextStyle(
+                      color: widget.checkoutOptions.textColor),
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                ),
+                initialValue: getAddressField(isBilling, "countryCode"),
+                onChanged: (String? value) => setAddressField(isBilling, "countryCode", value!),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: TextFormField(
+                style: TextStyle(
+                  color: widget.checkoutOptions.textColor,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Street name & number',
+                  labelText: 'Street name & number',
+                  focusedBorder: border,
+                  enabledBorder: border,
+                  hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                  labelStyle: TextStyle(
+                      color: widget.checkoutOptions.textColor),
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                ),
+                initialValue: getAddressField(isBilling, "street"),
+                onChanged: (String? value) => setAddressField(isBilling, "street", value!),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: TextFormField(
+                      style: TextStyle(
+                        color: widget.checkoutOptions.textColor,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'City',
+                        labelText: 'City',
+                        focusedBorder: border,
+                        enabledBorder: border,
+                        hintStyle: TextStyle(
+                            color: widget.checkoutOptions.textColor),
+                        labelStyle: TextStyle(
+                            color: widget.checkoutOptions.textColor),
+                        contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                      ),
+                      initialValue: getAddressField(isBilling, "city"),
+                      onChanged: (String? value) => setAddressField(isBilling, "city", value!),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Expanded(
+                      flex: 4,
+                      child: Container(
+                        margin: const EdgeInsets.only(
+                            left: 16),
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: widget.checkoutOptions.textColor,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Postal',
+                            labelText: 'Postal',
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            hintStyle: TextStyle(
+                                color: widget.checkoutOptions.textColor),
+                            labelStyle: TextStyle(
+                                color: widget.checkoutOptions.textColor),
+                            contentPadding:
+                            EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                  5.0)),
+                            ),
+                          ),
+                          initialValue: getAddressField(isBilling, "postCode"),
+                          onChanged: (String? value) => setAddressField(isBilling, "postCode", value!),
+                        ),
+                      )
+                  ),
+                ],
+              ),
+            )
+          ],
+        ));
+  }
+  addressForm_AR(bool isBilling) {
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Padding(
+            padding: const EdgeInsets.all(16),
+            child:
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
+                    child:
+                    Text(isBilling ? "عنوان الدفع" : "عنوان الشحن",
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold,
+                            color: widget.checkoutOptions.textColor))
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: TextFormField(
+                    style: TextStyle(
+                      color: widget.checkoutOptions.textColor,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'الدوله',
+                      labelText: 'الدوله',
+                      focusedBorder: border,
+                      enabledBorder: border,
+                      hintStyle: TextStyle(
+                          color: widget.checkoutOptions.textColor),
+                      labelStyle: TextStyle(
+                          color: widget.checkoutOptions.textColor),
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    initialValue: getAddressField(isBilling, "countryCode"),
+                    onChanged: (String? value) =>
+                        setAddressField(isBilling, "countryCode", value!),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: TextFormField(
+                    style: TextStyle(
+                      color: widget.checkoutOptions.textColor,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: 'الشارع و رقم المنزل',
+                      labelText: 'الشارع و رقم المنزل',
+                      focusedBorder: border,
+                      enabledBorder: border,
+                      hintStyle: TextStyle(
+                          color: widget.checkoutOptions.textColor),
+                      labelStyle: TextStyle(
+                          color: widget.checkoutOptions.textColor),
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    initialValue: getAddressField(isBilling, "street"),
+                    onChanged: (String? value) =>
+                        setAddressField(isBilling, "street", value!),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 6,
+                        child: TextFormField(
+                          style: TextStyle(
+                            color: widget.checkoutOptions.textColor,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'المحافظه',
+                            labelText: 'المحافظه',
+                            focusedBorder: border,
+                            enabledBorder: border,
+                            hintStyle: TextStyle(
+                                color: widget.checkoutOptions.textColor),
+                            labelStyle: TextStyle(
+                                color: widget.checkoutOptions.textColor),
+                            contentPadding:
+                            EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 10.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                  5.0)),
+                            ),
+                          ),
+                          initialValue: getAddressField(isBilling, "city"),
+                          onChanged: (String? value) =>
+                              setAddressField(isBilling, "city", value!),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Expanded(
+                          flex: 4,
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                right: 16),
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: widget.checkoutOptions.textColor,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: 'الرقم البريدى',
+                                labelText: 'الرقم البريدى',
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                hintStyle: TextStyle(
+                                    color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(
+                                    color: widget.checkoutOptions.textColor),
+                                contentPadding:
+                                EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 10.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                          5.0)),
+                                ),
+                              ),
+                              initialValue: getAddressField(
+                                  isBilling, "postCode"),
+                              onChanged: (String? value) =>
+                                  setAddressField(
+                                      isBilling, "postCode", value!),
+                            ),
+                          )
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ))
+    );
+  }
+  void setAddressField(bool isBilling, String field, String value)
+  {
+    if(isBilling && widget.checkoutOptions.billing == null)
+      widget.checkoutOptions.billing = new Address();
+
+    if(!isBilling && widget.checkoutOptions.shipping == null)
+      widget.checkoutOptions.shipping = new Address();
+
+    if(field == "countryCode")
+    {
+      isBilling ? widget.checkoutOptions.billing!.countryCode = value : widget.checkoutOptions.shipping!.countryCode = value;
+    }
+    else if(field == "street")
+    {
+      isBilling ? widget.checkoutOptions.billing!.street = value : widget.checkoutOptions.shipping!.street = value;
+    }
+    else if(field == "city")
+    {
+      isBilling ? widget.checkoutOptions.billing!.city = value : widget.checkoutOptions.shipping!.city = value;
+    }
+    else if(field == "postCode")
+    {
+      isBilling ? widget.checkoutOptions.billing!.postCode = value : widget.checkoutOptions.shipping!.postCode = value;
+    }
+  }
+  String getAddressField(bool isBilling, String field)
+  {
+    var billing = widget.checkoutOptions.billing != null ? widget.checkoutOptions.billing : new Address();
+    var shipping = widget.checkoutOptions.shipping != null ? widget.checkoutOptions.shipping : new Address();
+    if(field == "countryCode")
+    {
+      return isBilling ? billing!.countryCode!: shipping!.countryCode!;
+    }
+    else if(field == "street")
+      {
+        return isBilling ? billing!.street!: shipping!.street!;
+      }
+    else if(field == "city")
+    {
+      return isBilling ? billing!.city!: shipping!.city!;
+    }
+    else if(field == "postCode")
+    {
+      return isBilling ? billing!.postCode!: shipping!.postCode!;
+    }
+    else
+      {
+        return "";
+      }
+  }
+  void cardNumberChange(val)
+  {
+    setState(() {
+      cardType = detectCCType(val);
+    });
+  }
+
+  Widget buildCreditCardScreen_AR(BuildContext context)
+  {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        color: widget.checkoutOptions.backgroundColor,
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              const SizedBox(
+                height: 30,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      CreditCardForm(
+                        rtl: true,
+                        formKey: formKey,
+                        obscureCvv: true,
+                        obscureNumber: true,
+                        cardNumber: widget.paymentCard.number,
+                        cvvCode: widget.paymentCard.cvc,
+                        isHolderNameVisible: true,
+                        isCardNumberVisible: true,
+                        isExpiryDateVisible: true,
+                        cardHolderName: widget.paymentCard.name,
+                        expiryYear: widget.paymentCard.expiryYear,
+                        expiryMonth: widget.paymentCard.expiryMonth,
+                        themeColor: Colors.blue,
+                        textColor: Colors.white,
+                        onChange: cardNumberChange,
+                        cardNumberDecoration: InputDecoration(
+                          labelText: 'رقم الكارت',
+                          hintText: 'XXXX XXXX XXXX XXXX',
+                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          focusedBorder: border,
+                          enabledBorder: border,
+                          suffixIcon: (cardType != null &&
+                              CreditCardTypeIconAsset[cardType] != null) ?
+                          Container(
+                              margin: const EdgeInsets.all(12),
+                              child:
+                              Image.asset(
+                                CreditCardTypeIconAsset[cardType]!,
+                                height: 32,
+                                width: 32,
+                                package: 'geideapay',
+                              )):
+                          Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
+                        ),
+                        expiryDateDecoration: InputDecoration(
+                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          focusedBorder: border,
+                          enabledBorder: border,
+                          labelText: 'تاريخ الانتهاء',
+                          hintText: 'XX/XX',
+                        ),
+                        cvvCodeDecoration: InputDecoration(
+                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          focusedBorder: border,
+                          enabledBorder: border,
+                          labelText: 'الرقم المرجعى',
+                          hintText: 'XXX',
+                        ),
+                        cardHolderDecoration: InputDecoration(
+                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                          focusedBorder: border,
+                          enabledBorder: border,
+                          labelText: 'اسم صاحب الكارت',
+                        ),
+                        onCreditCardModelChange: onCreditCardModelChange,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
+                          ? addressForm_AR(true) : Container(),
+                      (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
+                          ? addressForm_AR(false) : Container(),
+                      (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
+                          ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Switch(
+                            value: widget.saveCard,
+                            inactiveTrackColor: Colors.grey,
+                            activeColor: Colors.white,
+                            activeTrackColor: Colors.green,
+                            onChanged: (bool value) => setState(() {
+                              widget.saveCard = value;
+                            }),
+                          ),
+                          const Text(
+                            'حفظ الكارت؟',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ) : Container(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                primary: widget.checkoutOptions.payButtonColor,
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.all(12),
+                                // child: Text(
+                                //   'Pay ' + widget.checkoutOptions.amount
+                                //       + ' '
+                                //       + (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: ''),
+                                //   style: const TextStyle(
+                                //     color: Colors.white,
+                                //     fontSize: 14,
+                                //   ),
+                                // ),
+                                child: Text(
+                                  (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: '') + 'ادفع ' + widget.checkoutOptions.amount
+                                      + ' ',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  print('valid!');
+                                  Navigator.pop(context, 'OK');
+                                } else {
+                                  print('invalid!');
+                                }
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                primary: widget.checkoutOptions.cancelButtonColor,
+                              ),
+                              child: Container(
+                                margin: const EdgeInsets.all(12),
+                                child: const Text(
+                                  'الغاء',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context, 'CANCEL');
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image(
+                              image: AssetImage('assets/logo.png', package: 'geideapay'),
+                              width: 30,
+                              fit: BoxFit.fill),
+                          Text(
+                            'Powered by Geidea',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          )
+                        ],
+                      ),
                       const SizedBox(
                         height: 20,
                       ),

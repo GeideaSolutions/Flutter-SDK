@@ -31,4 +31,8 @@ class PayTokenRequestBody extends BaseRequestBody {
 
     return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
   }
+  toString() {
+    return 'PayTokenRequestBody{_amount: $_amount, _currency: $_currency, _tokenId: $_tokenId, _initiatedBy: $_initiatedBy, _agreementId: $_agreementId, callbackUrl: $callbackUrl}';
+  }
+  
 }

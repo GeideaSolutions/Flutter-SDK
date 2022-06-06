@@ -8,4 +8,5 @@ class CancelRequestBody extends PostPayOperationRequestBody {
   String? callbackUrl_, reason_;
   CancelRequestBody(String orderId, this.reason_, {this.callbackUrl_}):
         super(orderId, callbackUrl: callbackUrl_, reason: reason_);
+
 }

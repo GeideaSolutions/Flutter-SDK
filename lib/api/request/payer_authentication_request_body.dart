@@ -64,4 +64,8 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
 
     return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
   }
+
+  toString() {
+    return 'PayerAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _paymentMethod: $_paymentMethod, _orderId: $_orderId, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, callbackUrl: $callbackUrl, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+  }
 }

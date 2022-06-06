@@ -117,4 +117,8 @@ class CheckoutRequestBody extends BaseRequestBody {
       ..removeWhere(
           (key, value) => value == null || (value is String && value.isEmpty));
   }
+
+  toString() {
+    return 'CheckoutRequestBody{amount: $amount, currency: $currency, callbackUrl: $callbackUrl, returnUrl: $returnUrl, merchantReferenceID: $merchantReferenceID, cardOnFile: $cardOnFile, paymentOperation: $paymentOperation, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+  }
 }
