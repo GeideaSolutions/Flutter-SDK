@@ -249,7 +249,7 @@ class _Geideapay {
 
       if(authenticationApiResponse.orderId == null)
         {
-          throw("Order ID is null");
+          throw(authenticationApiResponse.detailedResponseMessage!);
         }
       checkoutRequestBody.updatePayerAuthenticationRequestBody(authenticationApiResponse.orderId);
 
@@ -269,7 +269,7 @@ class _Geideapay {
       return orderApiResponse;
 
     } catch (e) {
-      rethrow;
+      throw(e);
     }
 
 
