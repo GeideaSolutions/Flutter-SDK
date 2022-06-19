@@ -79,7 +79,8 @@ class AuthenticationTransactionManager extends BaseTransactionManager {
       if(context != null)
       {
         String? responseHtml = apiResponse.html;
-        responseHtml = responseHtml!.replaceAll('target="challengeFrame"', 'target="_top"');
+        responseHtml = responseHtml!.replaceAll('target="redirectTo3ds1Frame"', 'target="_top"');
+        responseHtml = responseHtml.replaceAll('target="challengeFrame"', 'target="_top"');
 
         await Navigator.push(
           context!,
