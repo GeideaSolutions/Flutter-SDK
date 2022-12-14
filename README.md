@@ -20,8 +20,8 @@ Please install the prerequisites first, then you can either integrate the plugin
 
 ```
      geideapay:
-    	git:
-      	url: https://github.com/GeideaSolutions/geideapay.git
+    	url: https://github.com/GeideaSolutions/Flutter-SDK.git
+        path: geideapay
       	ref: main # branch name
 ```
 
