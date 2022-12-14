@@ -1,5 +1,6 @@
 // Supported card types
 enum CreditCardType {
+  mada,
   visa,
   amex,
   discover,
@@ -19,6 +20,9 @@ enum CreditCardType {
 /// A [List<String>] represents a range.
 /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
 const Map<CreditCardType, Set<List<String>>> cardNumPatterns = {
+  CreditCardType.mada: {
+    [''],
+  },
   CreditCardType.visa: {
     ['4'],
   },
@@ -135,10 +139,17 @@ RegExp _nonNumeric = RegExp(r'\D+');
 /// Finds whitespace in any form
 RegExp _whiteSpace = RegExp(r'\s+\b|\b\s');
 
+/// Mada
+RegExp _mada = RegExp(r'^((((400861)|(409201)|(410685)|(417633)|(428331)|(42867[1-3])|(431361)|(432328)|(440533)|(440647)|(440795)|(445564)|(446404)|(446672)|(455036)|(457865)|(458456)|(462220)|(46854[0-3])|(484783)|(48931[7-9])|(490980)|(493428)|(504300)|(508160)|(521076)|(527016)|(539931)|(557606)|(558848)|(585265)|(588845)|(588846)|(588847)|(588848)|(588849)|(588850)|(588851)|(58898[2-3])|(589005)|(589206)|(604906)|(605141)|(636120)|(42281[7-9])|(9682)|(439954)|(439956)|(419593)|(48301[0-2])|(532013)|(531095)|(530906)|(455708)|(524514)|(529741)|(537767)|(535989)|(48609[4-6])|(543357)|(401757)|(446393)|(434107)|(536023)|(407197)|(407395)|(529415)|(535825)|(543085)|(549760)|(437980))[0-9]{0,10})|((5067)|(4576)|(4011))[0-9]{0,12})$');
+
 /// This function determines the CC type based on the cardPatterns
 CreditCardType detectCCType(String ccNumStr) {
   CreditCardType cardType = CreditCardType.unknown;
   ccNumStr = ccNumStr.replaceAll(_whiteSpace, '');;
+
+  if (ccNumStr.length < 6) {
+    return cardType;
+  }
 
   if (ccNumStr.isEmpty) {
     return cardType;
@@ -148,6 +159,14 @@ CreditCardType detectCCType(String ccNumStr) {
   if (_nonNumeric.hasMatch(ccNumStr)) {
     return cardType;
   }
+
+  if(_mada.hasMatch(ccNumStr))
+    {
+      cardType = CreditCardType.mada;
+      return cardType;
+    }
+
+
 
   cardNumPatterns.forEach(
     (CreditCardType type, Set<List<String>> patterns) {

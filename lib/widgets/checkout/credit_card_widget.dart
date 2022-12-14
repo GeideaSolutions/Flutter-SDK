@@ -9,6 +9,7 @@ import 'custom_card_type_icon.dart';
 import 'glassmorphism_config.dart';
 
 const Map<CardType, String> CardTypeIconAsset = <CardType, String>{
+  CardType.mada: 'icons/amex.png',
   CardType.visa: 'icons/visa.png',
   CardType.americanExpress: 'icons/amex.png',
   CardType.mastercard: 'icons/mastercard.png',
@@ -459,8 +460,11 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
   Map<CardType, Set<List<String>>> cardNumPatterns =
       <CardType, Set<List<String>>>{
+    CardType.mada: <List<String>>{
+      <String>['400861'],
+    },
     CardType.visa: <List<String>>{
-      <String>['4'],
+      <String>['12'],
     },
     CardType.americanExpress: <List<String>>{
       <String>['34'],
@@ -557,6 +561,16 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       isAmex = ccType == CardType.americanExpress;
     } else {
       switch (ccType) {
+        case CardType.mada:
+          icon = Image.asset(
+            CardTypeIconAsset[ccType]!,
+            height: 48,
+            width: 48,
+            package: 'geideapay',
+          );
+          isAmex = false;
+          break;
+
         case CardType.visa:
           icon = Image.asset(
             CardTypeIconAsset[ccType]!,
@@ -743,4 +757,5 @@ enum CardType {
   visa,
   americanExpress,
   discover,
+  mada
 }

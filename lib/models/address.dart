@@ -18,6 +18,11 @@ class Address {
     return 'BillingAddress{countryCode: $countryCode, street: $street, city: $city, postCode: $postCode}';
   }
 
+  bool isempty()
+  {
+    return countryCode == null || (countryCode!).isEmpty || street == null || (street!).isEmpty || city == null || (city!).isEmpty;
+  }
+
   Map<String, dynamic>? toMap() {
     Map<String, Object?> addressParams = {};
     addressParams[BaseRequestBody.fieldCountryCode] = countryCode;

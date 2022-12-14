@@ -17,8 +17,8 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   final String? merchantReferenceID;
   final String? paymentOperation;
   final String? callbackUrl;
-  final Address? billing;
-  final Address? shipping;
+  final Address? billingAddress;
+  final Address? shippingAddress;
   final String? customerEmail;
   String? returnUrl;
   final String? paymentIntentId;
@@ -26,7 +26,7 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   PayerAuthenticationRequestBody(
       this._amount, this._currency, this._paymentMethod, this._orderId,
       {this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
-        this.callbackUrl, this.billing, this.shipping, this.customerEmail,
+        this.callbackUrl, this.billingAddress, this.shippingAddress, this.customerEmail,
         this.paymentIntentId})
   {
     returnUrl = "https://returnurl.com";
@@ -50,12 +50,12 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
     params[BaseRequestBody.fieldMerchantReferenceID] = merchantReferenceID;
     params[BaseRequestBody.fieldPaymentOperation] = paymentOperation;
 
-    if (billing != null) {
-      params[BaseRequestBody.fieldBilling] = billing!.toMap();
+    if (billingAddress != null) {
+      params[BaseRequestBody.fieldBilling] = billingAddress!.toMap();
     }
 
-    if (shipping != null) {
-      params[BaseRequestBody.fieldShipping] = shipping!.toMap();
+    if (shippingAddress != null) {
+      params[BaseRequestBody.fieldShipping] = shippingAddress!.toMap();
     }
 
     params[BaseRequestBody.fieldCustomerEmail] = customerEmail;
@@ -66,6 +66,6 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   }
 
   toString() {
-    return 'PayerAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _paymentMethod: $_paymentMethod, _orderId: $_orderId, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, callbackUrl: $callbackUrl, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+    return 'PayerAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _paymentMethod: $_paymentMethod, _orderId: $_orderId, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, callbackUrl: $callbackUrl, billingAddress: $billingAddress, shippingAddress: $shippingAddress, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
   }
 }

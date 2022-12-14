@@ -27,8 +27,8 @@ abstract class BaseRequestBody {
   static const String fieldMerchantReferenceID = "merchantReferenceID";
 
   static const String fieldPaymentOperation = "paymentOperation";
-  static const String fieldBilling = "billing";
-  static const String fieldShipping = "shipping";
+  static const String fieldBilling = "billingAddress";
+  static const String fieldShipping = "shippingAddress";
   static const String fieldCustomerEmail = "customerEmail";
   static const String fieldPaymentIntentId = "paymentIntentId";
 

@@ -16,6 +16,7 @@ import '../../common/credit_card_type_detector.dart';
 import '../../models/address.dart';
 
 const Map<CreditCardType, String?> CreditCardTypeIconAsset = <CreditCardType, String?>{
+  CreditCardType.mada: 'icons/mada.png',
   CreditCardType.visa: 'icons/visa.png',
   CreditCardType.amex: 'icons/amex.png',
   CreditCardType.mastercard: 'icons/mastercard.png',
@@ -42,6 +43,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool _checkoutInProgress = false;
 
   var cardType;
 
@@ -59,221 +61,237 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   @override
   Widget build(BuildContext context) {
     if(widget.checkoutOptions.lang == "EN")
-      {
-        return buildCreditCardScreen_EN(context);
-      }
+    {
+      return buildCreditCardScreen_EN(context);
+    }
     else
-      {
-        return buildCreditCardScreen_AR(context);
-      }
+    {
+      return buildCreditCardScreen_AR(context);
+    }
   }
 
   Widget buildCreditCardScreen_EN(BuildContext context)
   {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        color: widget.checkoutOptions.backgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 10),
-                          child:
-                          Text("Payment", style: TextStyle(
-                              fontSize: 16.0, fontWeight: FontWeight.bold,
-                              color: widget.checkoutOptions.textColor))
-                      ),
-                      CreditCardForm(
-                        formKey: formKey,
-                        obscureCvv: true,
-                        obscureNumber: false,
-                        cardNumber: widget.paymentCard.number,
-                        cvvCode: widget.paymentCard.cvc,
-                        isHolderNameVisible: true,
-                        isCardNumberVisible: true,
-                        isExpiryDateVisible: true,
-                        cardHolderName: widget.paymentCard.name,
-                        expiryYear: widget.paymentCard.expiryYear,
-                        expiryMonth: widget.paymentCard.expiryMonth,
-                        themeColor: Colors.blue,
-                        textColor: Colors.white,
-                        onChange: cardNumberChange,
-                        cardNumberDecoration: InputDecoration(
-                          labelText: 'Number',
-                          hintText: 'XXXX XXXX XXXX XXXX',
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                            suffixIcon: (cardType != null &&
-                                CreditCardTypeIconAsset[cardType] != null) ?
-                            Container(
-                              margin: const EdgeInsets.all(12),
-                              child:
-                            Image.asset(
-                              CreditCardTypeIconAsset[cardType]!,
-                              height: 32,
-                              width: 32,
-                              package: 'geideapay',
-                            )):
-                            Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
-                        ),
-                        expiryDateDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'Expired Date',
-                          hintText: 'XX/XX',
-                        ),
-                        cvvCodeDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'CVV',
-                          hintText: 'XXX',
-                        ),
-                        cardHolderDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'Card Holder',
-                        ),
-                        onCreditCardModelChange: onCreditCardModelChange,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
-                          ?                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const Text(
-                            'Save card?',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+        resizeToAvoidBottomInset: false,
+        body: Stack (
+          children: [
+            Container(
+              color: widget.checkoutOptions.backgroundColor,
+              child: SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                                padding: const EdgeInsets.only(left: 16, top: 10),
+                                child:
+                                Text("Payment", style: TextStyle(
+                                    fontSize: 16.0, fontWeight: FontWeight.bold,
+                                    color: widget.checkoutOptions.textColor))
                             ),
-                          ),
-                          Switch(
-                            value: widget.saveCard,
-                            inactiveTrackColor: Colors.grey,
-                            activeColor: Colors.white,
-                            activeTrackColor: Colors.green,
-                            onChanged: (bool value) => setState(() {
-                              widget.saveCard = value;
-                            }),
-                          ),
-                        ],
-                      ) : Container(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
-                          ? addressForm_EN(true) : Container(),
-                      (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
-                          ? addressForm_EN(false) : Container(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                primary: widget.checkoutOptions.payButtonColor,
+                            CreditCardForm(
+                              formKey: formKey,
+                              obscureCvv: true,
+                              obscureNumber: false,
+                              cardNumber: widget.paymentCard.number,
+                              cvvCode: widget.paymentCard.cvc,
+                              isHolderNameVisible: true,
+                              isCardNumberVisible: true,
+                              isExpiryDateVisible: true,
+                              cardHolderName: widget.paymentCard.name,
+                              expiryYear: widget.paymentCard.expiryYear,
+                              expiryMonth: widget.paymentCard.expiryMonth,
+                              themeColor: Colors.blue,
+                              textColor: Colors.white,
+                              onChange: cardNumberChange,
+                              cardNumberDecoration: InputDecoration(
+                                labelText: 'Number',
+                                hintText: 'XXXX XXXX XXXX XXXX',
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                suffixIcon: (cardType != null &&
+                                    CreditCardTypeIconAsset[cardType] != null) ?
+                                Container(
+                                    margin: const EdgeInsets.all(12),
+                                    child:
+                                    Image.asset(
+                                      CreditCardTypeIconAsset[cardType]!,
+                                      height: 32,
+                                      width: 32,
+                                      package: 'geideapay',
+                                    )):
+                                Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
                               ),
-                              child: Container(
-                                margin: const EdgeInsets.all(12),
-                                child: Text(
-                                  'Pay ' + widget.checkoutOptions.amount
-                                      + ' '
-                                      + (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: ''),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
+                              expiryDateDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'Expired Date',
+                                hintText: 'XX/XX',
                               ),
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  print('valid!');
-                                  Navigator.pop(context, 'OK');
-                                } else {
-                                  print('invalid!');
-                                }
-                              },
+                              cvvCodeDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'CVV',
+                                hintText: 'XXX',
+                              ),
+                              cardHolderDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'Card Holder',
+                              ),
+                              onCreditCardModelChange: onCreditCardModelChange,
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                primary: widget.checkoutOptions.cancelButtonColor,
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.all(12),
-                                child: const Text(
-                                  'Cancel',
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
+                                ?                       Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                const Text(
+                                  'Save card?',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: 18,
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'CANCEL');
-                              },
+                                Switch(
+                                  value: widget.saveCard,
+                                  inactiveTrackColor: Colors.grey,
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.green,
+                                  onChanged: (bool value) => setState(() {
+                                    widget.saveCard = value;
+                                  }),
+                                ),
+                              ],
+                            ) : Container(),
+                            const SizedBox(
+                              height: 10,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                              image: AssetImage('assets/logo.png', package: 'geideapay'),
-                              width: 30,
-                              fit: BoxFit.fill),
-                          Text(
-                            'Powered by Geidea',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                            (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
+                                ? addressForm_EN(true) : Container(),
+                            (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
+                                ? addressForm_EN(false) : Container(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      primary: widget.checkoutOptions.payButtonColor,
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      child: Text(
+                                        'Pay ' + widget.checkoutOptions.amount
+                                            + ' '
+                                            + (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: ''),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      if (formKey.currentState!.validate()) {
+                                        print('valid!');
+                                        setState(() => _checkoutInProgress = true);
+                                        Future.delayed(const Duration(seconds: 8), () {
+                                          setState(() {
+                                            _checkoutInProgress = false;
+                                          });
+                                          Navigator.pop(context, 'OK');
+                                        });
+                                      } else {
+                                        print('invalid!');
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      primary: widget.checkoutOptions.cancelButtonColor,
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context, 'CANCEL');
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
-                        ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image(
+                                    image: AssetImage('assets/logo.png', package: 'geideapay'),
+                                    width: 30,
+                                    fit: BoxFit.fill),
+                                Text(
+                                  'Powered by Geidea',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+            _checkoutInProgress ? Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ) : Container()
+          ],
+        )
     );
   }
 
@@ -556,53 +574,93 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   }
   void setAddressField(bool isBilling, String field, String value)
   {
-    if(isBilling && widget.checkoutOptions.billing == null)
-      widget.checkoutOptions.billing = new Address();
+    if(isBilling && widget.checkoutOptions.billingAddress == null)
+      widget.checkoutOptions.billingAddress = new Address();
 
-    if(!isBilling && widget.checkoutOptions.shipping == null)
-      widget.checkoutOptions.shipping = new Address();
+    if(!isBilling && widget.checkoutOptions.shippingAddress == null)
+      widget.checkoutOptions.shippingAddress = new Address();
 
     if(field == "countryCode")
     {
-      isBilling ? widget.checkoutOptions.billing!.countryCode = value : widget.checkoutOptions.shipping!.countryCode = value;
+      isBilling ? widget.checkoutOptions.billingAddress!.countryCode = value : widget.checkoutOptions.shippingAddress!.countryCode = value;
     }
     else if(field == "street")
     {
-      isBilling ? widget.checkoutOptions.billing!.street = value : widget.checkoutOptions.shipping!.street = value;
+      isBilling ? widget.checkoutOptions.billingAddress!.street = value : widget.checkoutOptions.shippingAddress!.street = value;
     }
     else if(field == "city")
     {
-      isBilling ? widget.checkoutOptions.billing!.city = value : widget.checkoutOptions.shipping!.city = value;
+      isBilling ? widget.checkoutOptions.billingAddress!.city = value : widget.checkoutOptions.shippingAddress!.city = value;
     }
     else if(field == "postCode")
     {
-      isBilling ? widget.checkoutOptions.billing!.postCode = value : widget.checkoutOptions.shipping!.postCode = value;
+      isBilling ? widget.checkoutOptions.billingAddress!.postCode = value : widget.checkoutOptions.shippingAddress!.postCode = value;
     }
   }
-  String getAddressField(bool isBilling, String field)
+  String? getAddressField(bool isBilling, String field)
   {
-    var billing = widget.checkoutOptions.billing != null ? widget.checkoutOptions.billing : new Address();
-    var shipping = widget.checkoutOptions.shipping != null ? widget.checkoutOptions.shipping : new Address();
+    var billingAddress = widget.checkoutOptions.billingAddress != null ? widget.checkoutOptions.billingAddress : new Address();
+    var shippingAddress = widget.checkoutOptions.shippingAddress != null ? widget.checkoutOptions.shippingAddress : new Address();
     if(field == "countryCode")
     {
-      return isBilling ? billing!.countryCode!: shipping!.countryCode!;
+      if(isBilling){
+        if(billingAddress != null)
+          return billingAddress!.countryCode;
+        else
+          return "";
+      } else {
+        if(shippingAddress != null)
+          return shippingAddress!.countryCode;
+        else
+          return "";
+      }
     }
     else if(field == "street")
-      {
-        return isBilling ? billing!.street!: shipping!.street!;
+    {
+      if(isBilling){
+        if(billingAddress != null)
+          return billingAddress!.street;
+        else
+          return "";
+      } else {
+        if(shippingAddress != null)
+          return shippingAddress!.street;
+        else
+          return "";
       }
+    }
     else if(field == "city")
     {
-      return isBilling ? billing!.city!: shipping!.city!;
+      if(isBilling){
+        if(billingAddress != null)
+          return billingAddress!.city;
+        else
+          return "";
+      } else {
+        if(shippingAddress != null)
+          return shippingAddress!.city;
+        else
+          return "";
+      }
     }
     else if(field == "postCode")
     {
-      return isBilling ? billing!.postCode!: shipping!.postCode!;
+      if(isBilling){
+        if(billingAddress != null)
+          return billingAddress!.postCode;
+        else
+          return "";
+      } else {
+        if(shippingAddress != null)
+          return shippingAddress!.postCode;
+        else
+          return "";
+      }
     }
     else
-      {
-        return "";
-      }
+    {
+      return "";
+    }
   }
   void cardNumberChange(val)
   {
@@ -614,210 +672,226 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   Widget buildCreditCardScreen_AR(BuildContext context)
   {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Container(
-        color: widget.checkoutOptions.backgroundColor,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                height: 30,
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      CreditCardForm(
-                        rtl: true,
-                        formKey: formKey,
-                        obscureCvv: true,
-                        obscureNumber: true,
-                        cardNumber: widget.paymentCard.number,
-                        cvvCode: widget.paymentCard.cvc,
-                        isHolderNameVisible: true,
-                        isCardNumberVisible: true,
-                        isExpiryDateVisible: true,
-                        cardHolderName: widget.paymentCard.name,
-                        expiryYear: widget.paymentCard.expiryYear,
-                        expiryMonth: widget.paymentCard.expiryMonth,
-                        themeColor: Colors.blue,
-                        textColor: Colors.white,
-                        onChange: cardNumberChange,
-                        cardNumberDecoration: InputDecoration(
-                          labelText: 'رقم الكارت',
-                          hintText: 'XXXX XXXX XXXX XXXX',
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          suffixIcon: (cardType != null &&
-                              CreditCardTypeIconAsset[cardType] != null) ?
-                          Container(
-                              margin: const EdgeInsets.all(12),
-                              child:
-                              Image.asset(
-                                CreditCardTypeIconAsset[cardType]!,
-                                height: 32,
-                                width: 32,
-                                package: 'geideapay',
-                              )):
-                          Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
-                        ),
-                        expiryDateDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'تاريخ الانتهاء',
-                          hintText: 'XX/XX',
-                        ),
-                        cvvCodeDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'الرقم المرجعى',
-                          hintText: 'XXX',
-                        ),
-                        cardHolderDecoration: InputDecoration(
-                          hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
-                          focusedBorder: border,
-                          enabledBorder: border,
-                          labelText: 'اسم صاحب الكارت',
-                        ),
-                        onCreditCardModelChange: onCreditCardModelChange,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
-                          ? addressForm_AR(true) : Container(),
-                      (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
-                          ? addressForm_AR(false) : Container(),
-                      (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
-                          ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Switch(
-                            value: widget.saveCard,
-                            inactiveTrackColor: Colors.grey,
-                            activeColor: Colors.white,
-                            activeTrackColor: Colors.green,
-                            onChanged: (bool value) => setState(() {
-                              widget.saveCard = value;
-                            }),
-                          ),
-                          const Text(
-                            'حفظ الكارت؟',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+        resizeToAvoidBottomInset: false,
+        body: Stack (
+          children: [
+            Container(
+              color: widget.checkoutOptions.backgroundColor,
+              child: SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            CreditCardForm(
+                              rtl: true,
+                              formKey: formKey,
+                              obscureCvv: true,
+                              obscureNumber: false,
+                              cardNumber: widget.paymentCard.number,
+                              cvvCode: widget.paymentCard.cvc,
+                              isHolderNameVisible: true,
+                              isCardNumberVisible: true,
+                              isExpiryDateVisible: true,
+                              cardHolderName: widget.paymentCard.name,
+                              expiryYear: widget.paymentCard.expiryYear,
+                              expiryMonth: widget.paymentCard.expiryMonth,
+                              themeColor: Colors.blue,
+                              textColor: Colors.white,
+                              onChange: cardNumberChange,
+                              cardNumberDecoration: InputDecoration(
+                                labelText: 'رقم الكارت',
+                                hintText: 'XXXX XXXX XXXX XXXX',
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                suffixIcon: (cardType != null &&
+                                    CreditCardTypeIconAsset[cardType] != null) ?
+                                Container(
+                                    margin: const EdgeInsets.all(12),
+                                    child:
+                                    Image.asset(
+                                      CreditCardTypeIconAsset[cardType]!,
+                                      height: 32,
+                                      width: 32,
+                                      package: 'geideapay',
+                                    )):
+                                Icon(Icons.call_to_action_rounded, color: widget.checkoutOptions.backgroundColor,),
+                              ),
+                              expiryDateDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'تاريخ الانتهاء',
+                                hintText: 'XX/XX',
+                              ),
+                              cvvCodeDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'الرقم المرجعى',
+                                hintText: 'XXX',
+                              ),
+                              cardHolderDecoration: InputDecoration(
+                                hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                labelStyle: TextStyle(color: widget.checkoutOptions.textColor),
+                                focusedBorder: border,
+                                enabledBorder: border,
+                                labelText: 'اسم صاحب الكارت',
+                              ),
+                              onCreditCardModelChange: onCreditCardModelChange,
                             ),
-                          ),
-                        ],
-                      ) : Container(),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                primary: widget.checkoutOptions.payButtonColor,
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.all(12),
-                                // child: Text(
-                                //   'Pay ' + widget.checkoutOptions.amount
-                                //       + ' '
-                                //       + (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: ''),
-                                //   style: const TextStyle(
-                                //     color: Colors.white,
-                                //     fontSize: 14,
-                                //   ),
-                                // ),
-                                child: Text(
-                                  (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: '') + 'ادفع ' + widget.checkoutOptions.amount
-                                      + ' ',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  print('valid!');
-                                  Navigator.pop(context, 'OK');
-                                } else {
-                                  print('invalid!');
-                                }
-                              },
+                            const SizedBox(
+                              height: 10,
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
+                            (widget.checkoutOptions.showBilling != null && widget.checkoutOptions.showBilling!)
+                                ? addressForm_AR(true) : Container(),
+                            (widget.checkoutOptions.showShipping != null && widget.checkoutOptions.showShipping!)
+                                ? addressForm_AR(false) : Container(),
+                            (widget.checkoutOptions.showSaveCard != null && widget.checkoutOptions.showSaveCard!)
+                                ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Switch(
+                                  value: widget.saveCard,
+                                  inactiveTrackColor: Colors.grey,
+                                  activeColor: Colors.white,
+                                  activeTrackColor: Colors.green,
+                                  onChanged: (bool value) => setState(() {
+                                    widget.saveCard = value;
+                                  }),
                                 ),
-                                primary: widget.checkoutOptions.cancelButtonColor,
-                              ),
-                              child: Container(
-                                margin: const EdgeInsets.all(12),
-                                child: const Text(
-                                  'الغاء',
+                                const Text(
+                                  'حفظ الكارت؟',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: 18,
                                   ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context, 'CANCEL');
-                              },
+                              ],
+                            ) : Container(),
+                            const SizedBox(
+                              height: 10,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image(
-                              image: AssetImage('assets/logo.png', package: 'geideapay'),
-                              width: 30,
-                              fit: BoxFit.fill),
-                          Text(
-                            'Powered by Geidea',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      primary: widget.checkoutOptions.payButtonColor,
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      // child: Text(
+                                      //   'Pay ' + widget.checkoutOptions.amount
+                                      //       + ' '
+                                      //       + (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: ''),
+                                      //   style: const TextStyle(
+                                      //     color: Colors.white,
+                                      //     fontSize: 14,
+                                      //   ),
+                                      // ),
+                                      child: Text(
+                                        (widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency!: '') + 'ادفع ' + widget.checkoutOptions.amount
+                                            + ' ',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      if (formKey.currentState!.validate()) {
+                                        print('valid!');
+                                        setState(() => _checkoutInProgress = true);
+                                        Future.delayed(const Duration(seconds: 8), () {
+                                          setState(() {
+                                            _checkoutInProgress = false;
+                                          });
+                                          Navigator.pop(context, 'OK');
+                                        });
+                                      } else {
+                                        print('invalid!');
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                      primary: widget.checkoutOptions.cancelButtonColor,
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(12),
+                                      child: const Text(
+                                        'الغاء',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context, 'CANCEL');
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                          )
-                        ],
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image(
+                                    image: AssetImage('assets/logo.png', package: 'geideapay'),
+                                    width: 30,
+                                    fit: BoxFit.fill),
+                                Text(
+                                  'Powered by Geidea',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
+            _checkoutInProgress ? Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ) : Container()
+          ],
+        )
     );
   }
 
@@ -830,6 +904,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
       widget.paymentCard.name = creditCardModel.cardHolderName;
       widget.paymentCard.cvc = creditCardModel.cvvCode;
       isCvvFocused = creditCardModel.isCvvFocused;
+      _checkoutInProgress = false;
     });
   }
 }

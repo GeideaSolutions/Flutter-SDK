@@ -22,8 +22,8 @@ class CheckoutRequestBody extends BaseRequestBody {
   String? merchantReferenceID;
   bool? cardOnFile;
   String? paymentOperation;
-  Address? billing;
-  Address? shipping;
+  Address? billingAddress;
+  Address? shippingAddress;
   String? customerEmail;
   String? paymentIntentId;
 
@@ -42,8 +42,8 @@ class CheckoutRequestBody extends BaseRequestBody {
     merchantReferenceID = checkoutOptions.merchantReferenceID;
     cardOnFile = checkoutOptions.cardOnFile;
     paymentOperation = checkoutOptions.paymentOperation;
-    billing = checkoutOptions.billing;
-    shipping = checkoutOptions.shipping;
+    billingAddress = checkoutOptions.billingAddress;
+    shippingAddress = checkoutOptions.shippingAddress;
     customerEmail = checkoutOptions.customerEmail;
     paymentIntentId = checkoutOptions.paymentIntentId;
 
@@ -53,8 +53,8 @@ class CheckoutRequestBody extends BaseRequestBody {
         cardOnFile: cardOnFile,
         merchantReferenceID: merchantReferenceID,
         paymentOperation: paymentOperation,
-        billing: billing,
-        shipping: shipping,
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
         customerEmail: customerEmail,
         paymentIntentId: paymentIntentId);
   }
@@ -67,8 +67,8 @@ class CheckoutRequestBody extends BaseRequestBody {
         merchantReferenceID: merchantReferenceID,
         paymentOperation: paymentOperation,
         callbackUrl: callbackUrl,
-        billing: billing,
-        shipping: shipping,
+        billingAddress: billingAddress,
+        shippingAddress: shippingAddress,
         customerEmail: customerEmail,
         paymentIntentId: paymentIntentId);
   }
@@ -103,12 +103,12 @@ class CheckoutRequestBody extends BaseRequestBody {
     params[BaseRequestBody.fieldMerchantReferenceID] = merchantReferenceID;
     params[BaseRequestBody.fieldPaymentOperation] = paymentOperation;
 
-    if (billing != null) {
-      params[BaseRequestBody.fieldBilling] = billing!.toMap();
+    if (billingAddress != null) {
+      params[BaseRequestBody.fieldBilling] = billingAddress!.toMap();
     }
 
-    if (shipping != null) {
-      params[BaseRequestBody.fieldShipping] = shipping!.toMap();
+    if (shippingAddress != null) {
+      params[BaseRequestBody.fieldShipping] = shippingAddress!.toMap();
     }
 
     params[BaseRequestBody.fieldCustomerEmail] = customerEmail;
@@ -119,6 +119,6 @@ class CheckoutRequestBody extends BaseRequestBody {
   }
 
   toString() {
-    return 'CheckoutRequestBody{amount: $amount, currency: $currency, callbackUrl: $callbackUrl, returnUrl: $returnUrl, merchantReferenceID: $merchantReferenceID, cardOnFile: $cardOnFile, paymentOperation: $paymentOperation, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+    return 'CheckoutRequestBody{amount: $amount, currency: $currency, callbackUrl: $callbackUrl, returnUrl: $returnUrl, merchantReferenceID: $merchantReferenceID, cardOnFile: $cardOnFile, paymentOperation: $paymentOperation, billingAddress: $billingAddress, shippingAddress: $shippingAddress, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
   }
 }

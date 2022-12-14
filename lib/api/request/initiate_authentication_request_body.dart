@@ -15,15 +15,15 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   final String? merchantReferenceID;
   final bool? cardOnFile;
   final String? paymentOperation;
-  final Address? billing;
-  final Address? shipping;
+  final Address? billingAddress;
+  final Address? shippingAddress;
   final String? customerEmail;
   final String? paymentIntentId;
 
   InitiateAuthenticationRequestBody(this._amount, this._currency,
       this._cardNumber, {this.callbackUrl,
       this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
-        this.billing, this.shipping, this.customerEmail, this.paymentIntentId})
+        this.billingAddress, this.shippingAddress, this.customerEmail, this.paymentIntentId})
   {
     returnUrl = "https://returnurl.com";
   }
@@ -41,12 +41,12 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
     params[BaseRequestBody.fieldMerchantReferenceID] = merchantReferenceID;
     params[BaseRequestBody.fieldPaymentOperation] = paymentOperation;
 
-    if (billing != null) {
-      params[BaseRequestBody.fieldBilling] = billing!.toMap();
+    if (billingAddress != null) {
+      params[BaseRequestBody.fieldBilling] = billingAddress!.toMap();
     }
 
-    if (shipping != null) {
-      params[BaseRequestBody.fieldShipping] = shipping!.toMap();
+    if (shippingAddress != null) {
+      params[BaseRequestBody.fieldShipping] = shippingAddress!.toMap();
     }
     
     params[BaseRequestBody.fieldCustomerEmail] = customerEmail;
@@ -55,6 +55,6 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   }
 
   toString() {
-    return 'InitiateAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _cardNumber: $_cardNumber, callbackUrl: $callbackUrl, returnUrl: $returnUrl, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, billing: $billing, shipping: $shipping, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
+    return 'InitiateAuthenticationRequestBody{_amount: $_amount, _currency: $_currency, _cardNumber: $_cardNumber, callbackUrl: $callbackUrl, returnUrl: $returnUrl, cardOnFile: $cardOnFile, merchantReferenceID: $merchantReferenceID, paymentOperation: $paymentOperation, billingAddress: $billingAddress, shippingAddress: $shippingAddress, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
   }
 }
