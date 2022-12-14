@@ -21,7 +21,7 @@ Please install the prerequisites first, then you can either integrate the plugin
 ```
      geideapay:
     	git:
-      	url: https://github.com/ahmed-elliethy/geideapay.git
+      	url: https://github.com/GeideaSolutions/geideapay.git
       	ref: main # branch name
 ```
 
