@@ -12,6 +12,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,10 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
           },
           onWebResourceError: (WebResourceError error){
             print('WebResourceError: $error');
+
+            if(Platform.isIOS){
+              Navigator.of(context).pop();
+            }
           },
           javascriptChannels: <JavascriptChannel>{
             _toasterJavascriptChannel(context),
