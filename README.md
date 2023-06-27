@@ -1,87 +1,109 @@
-# Overview
+# Geidea Online Payments for Flutter Mobile Apps
 
-The purpose of this Integration guide is to serve as technical documentation for merchants who wish to integrate the Geidea Payment plugin for Flutter so that they can use Payment Gateway services in their application.
+ - Contributors: kanti-kiran 
+ - Keywords: credit card, geidea, payment, payment for mobile sdk, payment for flutter, payment request, flutter
+ - License: GPLv3
+ - License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-This guide describes the functionality and APIs provided by the plugin and different approaches to integrating the plugin and customizing it.
+Add the Geidea online payments SDK to your mobile app store with Low Code and start accepting online payments seamlessly with Geidea Payment Gateway. Geidea Online Payments SDK for Flutter provides the tools for quick and easy integration of Geidea Payment Gateway services into your mobile apps created with Flutter.
 
+## Requirements
+- dart: ">=3.0.3 <4.0.0"
 
-# Integration
+### Getting Started
 
-Please install the prerequisites first, then you can either integrate the plugin using
+The Package is available on GitHub.
 
-1. **Simple** integration – 	The plugin hosts the entire UI flow and performs all transactions. A “turnkey” solution that requires minimal setup. You simply call a method to start the Payment flow and then receive your Order after everything is ready.
-2. **Custom** integration – the Merchant app hosts the entire UI flow (payment form, authentication) and performs all transactions by calling the Direct APIs through the plugin.
-
-
-## Prerequisites
-
-1 - Add the following to your **<code>pubspec.yaml</code></strong> file under dependencies
-
-
+1. In your `pubspec.yaml` file add:
 ```
-     geideapay:
-    	url: https://github.com/GeideaSolutions/Flutter-SDK.git
-        path: geideapay
-      	ref: main # branch name
-```
-
-
-2 - Change the **<code>minSdkVersion </code></strong>in  android/app/build.gradle file to be <strong>19</strong>
-
-
-```
-     android {
-       defaultConfig {
-     	minSdkVersion 19
-       }
-     }
+dependencies:
+  geideapay:
+    git:
+      url: https://github.com/payorch/flutter_sdk.git
+      ref: main # branch name
 
 ```
 
+2. `flutter pub get` run this command to add the above package to your project.
 
-
-1. Simple integration
-
-   1 - add the following imports
-
-
-    ```
-    import 'package:geideapay/common/geidea.dart';
-    import 'package:geideapay/widgets/checkout/checkout_options.dart';
-    import 'package:geideapay/api/response/order_api_response.dart';
-    ```
-
-
-
-    2 - Define an instance of the plugin
-
-
-    ```
-     final plugin = GeideapayPlugin();
-    ```
-
-
-
-    3 - Call the initialize function for the plugin and provide it with the 
-
-
-    ```
-     @override
-      void initState() {
-    plugin.initialize(publicKey: YourGeideaPublicKey, apiPassword: YourGeideaApiPassword);
-    	super.initState();
-      }
-    ```
-
-
-
-    4 - Create a **<code>CheckoutOptions</code></strong> object. The fields of this object are defined in the following table
-    5 - Call the checkout function from the plugin instance
-
+3. Then, in your code import:
 
 ```
-       	OrderApiResponse response =
-      	await plugin.checkout(
-          	context: context, checkoutOptions: checkoutOptions);
-      	print('Response = $response');
+import 'package:geideapay/geideapay.dart';
+import 'package:geideapay/models/address.dart';
+import 'package:geideapay/widgets/checkout/checkout_options.dart';
+
+```
+
+### Usage
+
+The integration starts by adding your merchant credentials (Merchant Public Key and API password) with the `GeideapayPlugin.initialize()` method.
+
+```
+final _plugin = GeideapayPlugin();
+
+@override
+void initState() {
+	super.initState();
+	_plugin.initialize(publicKey: "<YOUR MERCHANT KEY>",apiPassword: "<YOUR MERCHANT PASSWORD>");
+}
+
+```
+
+IMPORTANT: 
+1. The ```initialize()``` method is used for set credentials on plugin. This method or plugin not storing your credentials in any way. So it is required to set them on each app start event or before ```checkout()```.
+2. As a good security and coding practice, do **not** hard-code your merchant password directly into your code file. Always get it securely and dynamically (from the secure endpoint of your backend or some secure server) where the password has been stored with encryption.
+
+### Building your CheckoutOptions
+
+```
+Address billingAddress = Address(
+	city: "Riyadh",
+	countryCode: "SAU",
+	street: "Street 1",
+	postCode: "1000");
+Address shippingAddress = Address(
+	city: "Riyadh",
+	countryCode: "SAU",
+	street: "Street 1",
+	postCode: "1000");
+
+CheckoutOptions checkoutOptions = CheckoutOptions(
+	"123.45",
+	"SAR",
+    callbackUrl: "https://website.hook/", //Optional
+    lang: "AR", //Optional
+    billingAddress: billingAddress, //Optional
+    shippingAddress: shippingAddress, //Optional
+    customerEmail: "email@noreply.test", //Optional
+    merchantReferenceID: "1234", //Optional
+    paymentIntentId: null, //Optional
+    paymentOperation: "Pay", //Optional
+    showAddress: true, //Optional
+    showEmail: true, //Optional
+    textColor: "#ffffff", //Optional
+    cardColor: "#ff4d00", //Optional
+    payButtonColor: "#ff4d00", //Optional
+    cancelButtonColor: "#878787", //Optional
+    backgroundColor: "#2c2222", //Optional
+);
+
+```
+
+### Call the `checkout` method to open the payment screen
+
+```
+try {
+	OrderApiResponse response = await _plugin.checkout(context: context, checkoutOptions: checkoutOptions);
+	debugPrint('Response = $response');
+
+	// Payment successful, order returned in response
+	_updateStatus(response.detailedResponseMessage, truncate(response.toString()));
+} catch (e) {
+	debugPrint("OrderApiResponse Error: $e");
+	// An unexpected error due to improper SDK
+	// integration or Plugin internal bug
+	 _showMessage(e.toString());
+}
+
 ```
