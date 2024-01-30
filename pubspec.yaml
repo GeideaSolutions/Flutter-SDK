@@ -15,6 +15,7 @@ dependencies:
   meta: ^1.7.0
   async: ^2.8.2
   flutter_html: ^2.2.1
+  webview_flutter: ^2.8.0
 
 dev_dependencies:
   flutter_test:
