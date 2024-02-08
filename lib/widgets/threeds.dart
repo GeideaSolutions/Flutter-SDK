@@ -35,7 +35,7 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
   void initState() {
     super.initState();
     if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
+      WebView.platform = AndroidWebView();
     }
   }
 

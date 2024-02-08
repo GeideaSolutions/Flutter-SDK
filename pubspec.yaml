@@ -14,13 +14,15 @@ dependencies:
   intl: ^0.18.1
   meta: ^1.7.0
   async: ^2.8.2
-  flutter_html: ^2.2.1
-  webview_flutter: ^2.8.0
+  html: ^0.15.3
+#  flutter_html: ^2.2.1
+  webview_flutter: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
+  dependency_validator: ^3.2.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
