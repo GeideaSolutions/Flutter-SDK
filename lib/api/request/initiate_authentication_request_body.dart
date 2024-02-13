@@ -11,7 +11,7 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   final String? _cardNumber;
 
   final String? callbackUrl;
-  String? returnUrl;
+  final String? returnUrl;
   final String? merchantReferenceID;
   final bool? cardOnFile;
   final String? paymentOperation;
@@ -21,11 +21,10 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
   final String? paymentIntentId;
 
   InitiateAuthenticationRequestBody(this._amount, this._currency,
-      this._cardNumber, {this.callbackUrl,
-      this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
-        this.billingAddress, this.shippingAddress, this.customerEmail, this.paymentIntentId})
-  {
-    returnUrl = "https://returnurl.com";
+      this._cardNumber, {this.callbackUrl, this.returnUrl,
+        this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
+        this.billingAddress, this.shippingAddress, this.customerEmail, this.paymentIntentId}) {
+    // returnUrl = "https://returnurl.com";
   }
 
   @override
@@ -48,10 +47,12 @@ class InitiateAuthenticationRequestBody extends BaseRequestBody {
     if (shippingAddress != null) {
       params[BaseRequestBody.fieldShipping] = shippingAddress!.toMap();
     }
-    
+
     params[BaseRequestBody.fieldCustomerEmail] = customerEmail;
     params[BaseRequestBody.fieldPaymentIntentId] = paymentIntentId;
-    return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
+    return params
+      ..removeWhere((key, value) =>
+      value == null || (value is String && value.isEmpty));
   }
 
   toString() {

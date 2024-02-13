@@ -31,26 +31,26 @@ class CheckoutOptions {
 
   CheckoutOptions(this.amount, this.currency,
       {this.callbackUrl,
-      this.cardOnFile,
-      this.merchantReferenceID,
-      this.paymentOperation,
-      this.billingAddress,
-      this.shippingAddress,
-      this.customerEmail,
-      this.paymentIntentId,
-      this.backgroundColor,
-      this.cardColor,
-      this.textColor,
-      this.payButtonColor,
-      this.cancelButtonColor,
-      this.lang,
-      this.showAddress,
-      this.showSaveCard,
-      this.showEmail}) {
+        this.returnUrl,
+        this.cardOnFile,
+        this.merchantReferenceID,
+        this.paymentOperation,
+        this.billingAddress,
+        this.shippingAddress,
+        this.customerEmail,
+        this.paymentIntentId,
+        this.backgroundColor,
+        this.cardColor,
+        this.textColor,
+        this.payButtonColor,
+        this.cancelButtonColor,
+        this.lang,
+        this.showAddress,
+        this.showSaveCard,
+        this.showEmail}) {
     if (paymentOperation != null && paymentOperation!.startsWith("Default")) {
       paymentOperation = null;
     }
-    returnUrl = "https://returnurl.com";
     backgroundColor ??= const Color(0xff2c2222);
     cardColor ??= const Color(0xffff4d00);
     textColor ??= const Color(0xffffffff);

@@ -12,7 +12,7 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   final PaymentCard? _paymentMethod;
   final String _orderId;
 
-  
+
   final bool? cardOnFile;
   final String? merchantReferenceID;
   final String? paymentOperation;
@@ -20,17 +20,14 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
   final Address? billingAddress;
   final Address? shippingAddress;
   final String? customerEmail;
-  String? returnUrl;
+  final String? returnUrl;
   final String? paymentIntentId;
 
-  PayerAuthenticationRequestBody(
-      this._amount, this._currency, this._paymentMethod, this._orderId,
+  PayerAuthenticationRequestBody(this._amount, this._currency,
+      this._paymentMethod, this._orderId,
       {this.cardOnFile, this.merchantReferenceID, this.paymentOperation,
-        this.callbackUrl, this.billingAddress, this.shippingAddress, this.customerEmail,
-        this.paymentIntentId})
-  {
-    returnUrl = "https://returnurl.com";
-  }
+        this.callbackUrl, this.returnUrl, this.billingAddress, this.shippingAddress, this.customerEmail,
+        this.paymentIntentId}){}
 
   @override
   Map<String, Object?> paramsMap() {
@@ -60,9 +57,11 @@ class PayerAuthenticationRequestBody extends BaseRequestBody {
 
     params[BaseRequestBody.fieldCustomerEmail] = customerEmail;
     params[BaseRequestBody.fieldPaymentIntentId] = paymentIntentId;
-    
 
-    return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
+
+    return params
+      ..removeWhere((key, value) =>
+      value == null || (value is String && value.isEmpty));
   }
 
   toString() {
