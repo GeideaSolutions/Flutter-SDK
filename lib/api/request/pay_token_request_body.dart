@@ -1,8 +1,4 @@
-import 'dart:async';
-
 import 'package:geideapay/api/request/base/base_request_body.dart';
-import 'package:geideapay/common/card_utils.dart';
-import 'package:geideapay/geideapay.dart';
 
 class PayTokenRequestBody extends BaseRequestBody {
 

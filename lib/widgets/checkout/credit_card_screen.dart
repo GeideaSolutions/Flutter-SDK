@@ -30,8 +30,13 @@ class CreditCardScreen extends StatefulWidget {
   late PaymentCard paymentCard = PaymentCard.empty();
   late bool saveCard = false;
   CheckoutOptions checkoutOptions;
+  final Function(PaymentCard)? onCardEditComplete;
 
-  CreditCardScreen({Key? key, required this.checkoutOptions}) : super(key: key);
+  CreditCardScreen({
+    Key? key,
+    required this.checkoutOptions,
+    this.onCardEditComplete,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -63,7 +68,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.checkoutOptions.lang == "EN") {
+    if (widget.checkoutOptions.lang == "en") {
       return buildCreditCardScreen_EN(context);
     } else {
       return buildCreditCardScreen_AR(context);
@@ -112,6 +117,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                               themeColor: Colors.blue,
                               textColor: Colors.white,
                               onChange: cardNumberChange,
+                              onCardEditComplete: () => widget
+                                  .onCardEditComplete!(widget.paymentCard),
                               cardNumberDecoration: InputDecoration(
                                 labelText: 'Number',
                                 hintText: 'XXXX XXXX XXXX XXXX',
@@ -229,7 +236,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                       margin: const EdgeInsets.all(12),
                                       child: Text(
                                         'Pay ' +
-                                            widget.checkoutOptions.amount +
+                                            widget.checkoutOptions.amount
+                                                .toString() +
                                             ' ' +
                                             (widget.checkoutOptions.currency !=
                                                     null
@@ -643,48 +651,48 @@ class CreditCardScreenState extends State<CreditCardScreen> {
     if (field == "countryCode") {
       if (isBilling) {
         if (billingAddress != null)
-          return billingAddress!.countryCode;
+          return billingAddress.countryCode;
         else
           return "";
       } else {
         if (shippingAddress != null)
-          return shippingAddress!.countryCode;
+          return shippingAddress.countryCode;
         else
           return "";
       }
     } else if (field == "street") {
       if (isBilling) {
         if (billingAddress != null)
-          return billingAddress!.street;
+          return billingAddress.street;
         else
           return "";
       } else {
         if (shippingAddress != null)
-          return shippingAddress!.street;
+          return shippingAddress.street;
         else
           return "";
       }
     } else if (field == "city") {
       if (isBilling) {
         if (billingAddress != null)
-          return billingAddress!.city;
+          return billingAddress.city;
         else
           return "";
       } else {
         if (shippingAddress != null)
-          return shippingAddress!.city;
+          return shippingAddress.city;
         else
           return "";
       }
     } else if (field == "postCode") {
       if (isBilling) {
         if (billingAddress != null)
-          return billingAddress!.postCode;
+          return billingAddress.postCode;
         else
           return "";
       } else {
         if (shippingAddress != null)
-          return shippingAddress!.postCode;
+          return shippingAddress.postCode;
         else
           return "";
       }
@@ -862,7 +870,8 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                                     .checkoutOptions.currency!
                                                 : '') +
                                             'ادفع ' +
-                                            widget.checkoutOptions.amount +
+                                            widget.checkoutOptions.amount
+                                                .toString() +
                                             ' ',
                                         style: const TextStyle(
                                           color: Colors.white,

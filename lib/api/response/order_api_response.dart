@@ -12,7 +12,7 @@ class OrderApiResponse extends ApiResponse {
   }
 
   OrderApiResponse.fromMap(Map<String, dynamic> map) {
-    order = map["order"] == null? null : Order.fromMap(map["order"]);
+    order = map["order"] == null ? null : Order.fromMap(map["order"]);
     fromMap(map);
   }
 
@@ -37,6 +37,18 @@ class OrderApiResponse extends ApiResponse {
         'responseCode: $responseCode, detailedResponseCode: $detailedResponseCode, '
         'responseMessage: $responseMessage, detailedResponseMessage: $detailedResponseMessage, '
         'language: $language}';
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      "order": order?.toMap(),
+      "responseCode": responseCode,
+      "detailedResponseCode": detailedResponseCode,
+      "responseMessage": responseMessage,
+      "detailedResponseMessage": detailedResponseMessage,
+      "language": language
+    };
   }
 
   OrderApiResponse.defaults()

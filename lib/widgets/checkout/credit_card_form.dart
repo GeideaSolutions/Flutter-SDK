@@ -41,10 +41,11 @@ class CreditCardForm extends StatefulWidget {
     this.isCardNumberVisible = true,
     this.isExpiryDateVisible = true,
     this.rtl = false,
+    this.onCardEditComplete,
   }) : super(key: key);
 
   final String? cardNumber;
-  int?  expiryMonth, expiryYear;
+  int? expiryMonth, expiryYear;
   final String? cardHolderName;
   final String? cvvCode;
   final String cvvValidationMessage;
@@ -66,6 +67,7 @@ class CreditCardForm extends StatefulWidget {
   final InputDecoration cardHolderDecoration;
   final InputDecoration expiryDateDecoration;
   final InputDecoration cvvCodeDecoration;
+  final VoidCallback? onCardEditComplete;
 
   @override
   _CreditCardFormState createState() => _CreditCardFormState();
@@ -103,7 +105,8 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   void createCreditCardModel() {
     cardNumber = widget.cardNumber!;
-    expiryDate = widget.expiryYear.toString() + "/" + widget.expiryMonth.toString();
+    expiryDate =
+        widget.expiryYear.toString() + "/" + widget.expiryMonth.toString();
     cardHolderName = widget.cardHolderName!;
     cvvCode = widget.cvvCode!;
 
@@ -117,17 +120,16 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
     createCreditCardModel();
 
-      print(widget.cardNumberDecoration.hintStyle);
-      cardNumberDecoration1 = new InputDecoration(
-          labelText: widget.cardNumberDecoration.labelText,
-          hintText:widget.cardNumberDecoration.hintText,
-          hintStyle:widget.cardNumberDecoration.hintStyle,
-          labelStyle:widget.cardNumberDecoration.labelStyle,
-          focusedBorder:widget.cardNumberDecoration.focusedBorder,
-          enabledBorder:widget.cardNumberDecoration.enabledBorder,
-      );
-      print(cardNumberDecoration1.hintStyle);
-
+    print(widget.cardNumberDecoration.hintStyle);
+    cardNumberDecoration1 = new InputDecoration(
+      labelText: widget.cardNumberDecoration.labelText,
+      hintText: widget.cardNumberDecoration.hintText,
+      hintStyle: widget.cardNumberDecoration.hintStyle,
+      labelStyle: widget.cardNumberDecoration.labelStyle,
+      focusedBorder: widget.cardNumberDecoration.focusedBorder,
+      enabledBorder: widget.cardNumberDecoration.enabledBorder,
+    );
+    print(cardNumberDecoration1.hintStyle);
 
     onCreditCardModelChange = widget.onCreditCardModelChange;
 
@@ -194,42 +196,43 @@ class _CreditCardFormState extends State<CreditCardForm> {
           child: Column(
             children: <Widget>[
               Visibility(
-                  visible: widget.isCardNumberVisible,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    margin: const EdgeInsets.only(
-                        left: 16, top: 16, right: 16),
-                    child: TextFormField(
-                      obscureText: widget.obscureNumber,
-                      controller: _cardNumberController,
-                      cursorColor: widget.cursorColor ?? themeColor,
-                      onEditingComplete: () {
-                        FocusScope.of(context).requestFocus(
-                            expiryDateNode);
-                      },
-                      onChanged: (String text) {
-                        setState(() {
-                          widget.onChange!(text);
-                        });
-                      },
-                      style: TextStyle(
-                        color: widget.textColor,
-                      ),
-                      decoration: widget.cardNumberDecoration,
-                      keyboardType: TextInputType.number,
-                      textInputAction: TextInputAction.next,
-                      autofillHints: const <String>[
-                        AutofillHints.creditCardNumber
-                      ],
-                      validator: (String? value) {
-                        // Validate less that 13 digits +3 white spaces
-                        if (value!.isEmpty || value.length < 16) {
-                          return widget.numberValidationMessage;
-                        }
-                        return null;
-                      },
+                visible: widget.isCardNumberVisible,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  margin: const EdgeInsets.only(left: 16, top: 16, right: 16),
+                  child: TextFormField(
+                    obscureText: widget.obscureNumber,
+                    controller: _cardNumberController,
+                    cursorColor: widget.cursorColor ?? themeColor,
+                    onEditingComplete: () {
+                      if (widget.onCardEditComplete != null) {
+                        widget.onCardEditComplete!();
+                      }
+                      FocusScope.of(context).requestFocus(expiryDateNode);
+                    },
+                    onChanged: (String text) {
+                      setState(() {
+                        widget.onChange!(text);
+                      });
+                    },
+                    style: TextStyle(
+                      color: widget.textColor,
                     ),
+                    decoration: widget.cardNumberDecoration,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const <String>[
+                      AutofillHints.creditCardNumber
+                    ],
+                    validator: (String? value) {
+                      // Validate less that 13 digits +3 white spaces
+                      if (value!.isEmpty || value.length < 16) {
+                        return widget.numberValidationMessage;
+                      }
+                      return null;
+                    },
                   ),
+                ),
               ),
               Row(
                 children: <Widget>[
@@ -239,7 +242,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         margin:
-                        const EdgeInsets.only(left: 16, top: 8, right: 16),
+                            const EdgeInsets.only(left: 16, top: 8, right: 16),
                         child: TextFormField(
                           controller: _expiryDateController,
                           cursorColor: widget.cursorColor ?? themeColor,
@@ -280,8 +283,8 @@ class _CreditCardFormState extends State<CreditCardForm> {
                   Expanded(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      margin: const EdgeInsets.only(
-                          left: 16, top: 8, right: 16),
+                      margin:
+                          const EdgeInsets.only(left: 16, top: 8, right: 16),
                       child: TextFormField(
                         obscureText: widget.obscureCvv,
                         focusNode: cvvFocusNode,

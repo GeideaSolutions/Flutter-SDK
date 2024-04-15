@@ -12,4 +12,9 @@ class StatementDescriptor {
   String toString() {
     return 'StatementDescriptor{name: $name, phone: $phone}';
   }
+
+  @override
+  Map<String, dynamic>? toMap() {
+    return {"name": name, "phone": phone};
+  }
 }

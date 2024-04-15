@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 
 class ThreeDSPage extends StatefulWidget {
   final String? html;
-  final String returnURL;
+  final String? returnURL;
 
   const ThreeDSPage(this.html, this.returnURL, {Key? key}) : super(key: key);
 
@@ -27,22 +27,20 @@ class ThreeDSPage extends StatefulWidget {
 }
 
 class _ThreeDSPageState extends State<ThreeDSPage> {
-
   late final Completer<WebViewController> _controller =
-  Completer<WebViewController>();
+      Completer<WebViewController>();
 
   @override
   void initState() {
     super.initState();
     if (Platform.isAndroid) {
-      WebView.platform = SurfaceAndroidWebView();
+      WebView.platform = AndroidWebView();
     }
   }
 
   String url = "";
   double progress = 0;
   final urlController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +52,18 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             _controller.complete(webViewController);
-            webViewController.currentUrl().then((value) => print("current url is " + value.toString()));
+            webViewController
+                .currentUrl()
+                .then((value) => print("current url is " + value.toString()));
             _onLoadHtmlStringExample(webViewController, context, widget.html);
           },
           onProgress: (int progress) {
             print('WebView is loading (progress : $progress%)');
           },
-          onWebResourceError: (WebResourceError error){
+          onWebResourceError: (WebResourceError error) {
             print('WebResourceError: $error');
 
-            if(Platform.isIOS){
+            if (Platform.isIOS) {
               Navigator.of(context).pop();
             }
           },
@@ -71,17 +71,23 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
             _toasterJavascriptChannel(context),
           },
           onPageStarted: (String url) {
-            print('Page started loading: $url');
-            if(url.startsWith(widget.returnURL))
-            {
+            print('Page started loading: $url, ${widget.returnURL}');
+            if (url.startsWith(widget.returnURL ?? "")) {
               Navigator.of(context).pop();
             }
           },
           onPageFinished: (String url) {
             print('Page finished loading: $url');
+            // if (url.startsWith(widget.returnURL)) {
+            //   Navigator.of(context).pop();
+            // }
           },
           navigationDelegate: (webviewf.NavigationRequest request) {
             print('allowing navigation to $request');
+            if (request.url.startsWith(widget.returnURL ?? "")) {
+              Navigator.of(context).pop();
+              return webviewf.NavigationDecision.prevent;
+            }
             return webviewf.NavigationDecision.navigate;
           },
           gestureNavigationEnabled: true,
@@ -90,6 +96,7 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
       }),
     );
   }
+
   JavascriptChannel _toasterJavascriptChannel(BuildContext context) {
     return JavascriptChannel(
         name: 'Toaster',

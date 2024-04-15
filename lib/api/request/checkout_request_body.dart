@@ -1,21 +1,23 @@
-import 'dart:async';
-
 import 'package:geideapay/api/request/base/base_request_body.dart';
+import 'package:geideapay/api/request/direct_session_request_body.dart';
 import 'package:geideapay/api/request/initiate_authentication_request_body.dart';
 import 'package:geideapay/api/request/pay_direct_request_body.dart';
 import 'package:geideapay/api/request/payer_authentication_request_body.dart';
-import 'package:geideapay/common/card_utils.dart';
+import 'package:geideapay/common/utils.dart';
 import 'package:geideapay/geideapay.dart';
 import 'package:geideapay/models/address.dart';
+import 'package:geideapay/models/appearance.dart';
+import 'package:geideapay/models/deviceIdentification.dart';
+import 'package:geideapay/models/session.dart';
 import 'package:geideapay/widgets/checkout/checkout_options.dart';
+import 'package:intl/intl.dart';
 
 class CheckoutRequestBody extends BaseRequestBody {
-
   CheckoutOptions checkoutOptions;
 
   PaymentCard? _paymentCard;
-  late String amount;
-  String? currency;
+  late double amount;
+  late String currency;
 
   String? callbackUrl;
   String? returnUrl;
@@ -27,16 +29,18 @@ class CheckoutRequestBody extends BaseRequestBody {
   String? customerEmail;
   String? paymentIntentId;
 
+  late DirectSessionRequestBody directSessionRequestBody;
   late InitiateAuthenticationRequestBody initiateAuthenticationRequestBody;
   late PayerAuthenticationRequestBody payerAuthenticationRequestBody;
   late PayDirectRequestBody payDirectRequestBody;
 
+  Session? session;
   String? orderId;
   String? threeDSecureId;
 
   CheckoutRequestBody(this.checkoutOptions, this._paymentCard) {
-    amount = checkoutOptions.amount.toString();
-    currency = checkoutOptions.currency;
+    amount = checkoutOptions.amount;
+    currency = checkoutOptions.currency.toString();
     callbackUrl = checkoutOptions.callbackUrl;
     returnUrl = checkoutOptions.returnUrl;
     merchantReferenceID = checkoutOptions.merchantReferenceID;
@@ -47,39 +51,92 @@ class CheckoutRequestBody extends BaseRequestBody {
     customerEmail = checkoutOptions.customerEmail;
     paymentIntentId = checkoutOptions.paymentIntentId;
 
+    // initiateAuthenticationRequestBody = InitiateAuthenticationRequestBody(
+    //     amount, currency, _paymentCard!.number,
+    //     callbackUrl: callbackUrl,
+    //     returnUrl: returnUrl,
+    //     cardOnFile: cardOnFile,
+    //     merchantReferenceID: merchantReferenceID,
+    //     paymentOperation: paymentOperation,
+    //     billingAddress: billingAddress,
+    //     shippingAddress: shippingAddress,
+    //     customerEmail: customerEmail,
+    //     paymentIntentId: paymentIntentId);
+  }
+
+  void updateDirectSessionRequestBody(String publicKey, String apiPassword) {
+    String timeStamp =
+        DateFormat('MM/dd/yyyy hh:mm:ss a').format(DateTime.now());
+
+    directSessionRequestBody = DirectSessionRequestBody(
+      amount,
+      currency,
+      timeStamp,
+      merchantReferenceID.toString(),
+      Utils.generateSignature(publicKey, amount, currency, merchantReferenceID,
+          apiPassword, timeStamp),
+      callbackUrl: callbackUrl,
+      cardOnFile: cardOnFile,
+      paymentIntentId: paymentIntentId,
+      paymentOperation: paymentOperation,
+      language: checkoutOptions.lang,
+      appearance: Appearance(
+        showEmail: checkoutOptions.showEmail,
+        showAddress: checkoutOptions.showAddress,
+      ),
+    );
+  }
+
+  void updateInitiateAuthenticationRequestBody(Session? session) {
+    this.session = session;
+
     initiateAuthenticationRequestBody = InitiateAuthenticationRequestBody(
-       amount, currency, _paymentCard!.number,
-        callbackUrl: callbackUrl,
-        cardOnFile: cardOnFile,
-        merchantReferenceID: merchantReferenceID,
-        paymentOperation: paymentOperation,
-        billingAddress: billingAddress,
-        shippingAddress: shippingAddress,
-        customerEmail: customerEmail,
-        paymentIntentId: paymentIntentId);
+      session?.id,
+      _paymentCard?.number,
+      returnUrl,
+      amount: amount,
+      currency: currency,
+      callbackUrl: callbackUrl,
+      cardOnFile: cardOnFile,
+      merchantName: session?.customer,
+      paymentOperation: paymentOperation,
+      deviceIdentification: DeviceIdentification(
+        language: checkoutOptions.lang,
+      ),
+      source: "MobileApp",
+    );
   }
 
   void updatePayerAuthenticationRequestBody(String? orderId) {
     this.orderId = orderId;
+
     payerAuthenticationRequestBody = PayerAuthenticationRequestBody(
-        amount, currency, _paymentCard, this.orderId!,
-        cardOnFile: cardOnFile,
-        merchantReferenceID: merchantReferenceID,
-        paymentOperation: paymentOperation,
-        callbackUrl: callbackUrl,
-        billingAddress: billingAddress,
-        shippingAddress: shippingAddress,
-        customerEmail: customerEmail,
-        paymentIntentId: paymentIntentId);
+      session?.id,
+      orderId,
+      _paymentCard,
+      DeviceIdentification(
+        language: checkoutOptions.lang,
+      ),
+      -120,
+      browser: "Flutter SDK",
+      ReturnUrl: returnUrl,
+      callbackUrl: callbackUrl,
+      cardOnFile: cardOnFile,
+      merchantName: session?.customer,
+      paymentOperation: paymentOperation,
+    );
   }
 
   void updatePayDirectRequestBody(String? threeDSecureId) {
     this.threeDSecureId = threeDSecureId;
     payDirectRequestBody = PayDirectRequestBody(
-        this.threeDSecureId!, orderId!, amount, currency, _paymentCard,
-        paymentOperation: paymentOperation,
-        callbackUrl: callbackUrl,
-        paymentIntentId: paymentIntentId);
+      session?.id,
+      orderId,
+      threeDSecureId,
+      _paymentCard,
+      returnUrl: returnUrl,
+      paymentOperation: paymentOperation,
+    );
   }
 
   Map<String, Object?> paramsInitiateAuthenticationMap() {

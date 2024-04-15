@@ -30,14 +30,12 @@ dependencies:
 
 ```
 import 'package:geideapay/geideapay.dart';
-import 'package:geideapay/models/address.dart';
-import 'package:geideapay/widgets/checkout/checkout_options.dart';
 
 ```
 
 ### Usage
 
-The integration starts by adding your merchant credentials (Merchant Public Key and API password) with the `GeideapayPlugin.initialize()` method.
+The integration starts by adding your merchant credentials (Merchant Public Key, API password, BaseUrl) with the `GeideapayPlugin.initialize()` method.
 
 ```
 final _plugin = GeideapayPlugin();
@@ -45,7 +43,10 @@ final _plugin = GeideapayPlugin();
 @override
 void initState() {
 	super.initState();
-	_plugin.initialize(publicKey: "<YOUR MERCHANT KEY>",apiPassword: "<YOUR MERCHANT PASSWORD>");
+	_plugin.initialize(
+        publicKey: "<YOUR MERCHANT KEY>",
+        apiPassword: "<YOUR MERCHANT PASSWORD>",
+        baseUrl: "<YOUR MERCHANT BASE URL>");
 }
 
 ```
@@ -72,6 +73,7 @@ CheckoutOptions checkoutOptions = CheckoutOptions(
 	"123.45",
 	"SAR",
     callbackUrl: "https://website.hook/", //Optional
+	returnUrl: "https://website.hook/", //Optional (deep link url)
     lang: "AR", //Optional
     billingAddress: billingAddress, //Optional
     shippingAddress: shippingAddress, //Optional

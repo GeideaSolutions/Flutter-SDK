@@ -1,46 +1,51 @@
-import 'dart:async';
-
 import 'package:geideapay/api/request/base/base_request_body.dart';
-import 'package:geideapay/common/card_utils.dart';
 import 'package:geideapay/geideapay.dart';
 
 class PayDirectRequestBody extends BaseRequestBody {
-
-  final String _threeDSecureId;
-  final String _orderId;
-  final String _amount;
-  final String? _currency;
-  final PaymentCard? _paymentMethod;
-
+  final String? orderId;
+  final String? threeDSecureId;
+  final String? sessionId;
   final String? paymentOperation;
-  final String? callbackUrl;
-  final String? paymentIntentId;
-  
-  PayDirectRequestBody(this._threeDSecureId,this._orderId,
-      this._amount, this._currency, this._paymentMethod,
-      {this.paymentOperation, this.callbackUrl, this.paymentIntentId});
+  final String? customerPhoneNumber;
+  final String? customerPhoneCountryCode;
+  final PaymentCard? paymentMethod;
+  final String? returnUrl;
+  final String? source;
+
+  PayDirectRequestBody(
+    this.sessionId,
+    this.orderId,
+    this.threeDSecureId,
+    this.paymentMethod, {
+    this.source = "MobileApp",
+    this.paymentOperation,
+    this.customerPhoneNumber,
+    this.customerPhoneCountryCode,
+    this.returnUrl,
+  });
 
   @override
   Map<String, Object?> paramsMap() {
     // set values will override additional params provided
     Map<String, Object?> params = {};
-    params[BaseRequestBody.fieldOrderId] = _orderId;
-    params[BaseRequestBody.fieldThreeDSecureId] = _threeDSecureId;
-    params[BaseRequestBody.fieldAmount] = _amount;
-    params[BaseRequestBody.fieldCurrency] = _currency;
-    
-    params[BaseRequestBody.fieldBrowser] = "Flutetr SDK";
-
-    params[BaseRequestBody.fieldPaymentMethod] = _paymentMethod!.toMap();
-    
+    params[BaseRequestBody.fieldOrderId] = orderId;
+    params[BaseRequestBody.fieldThreeDSecureId] = threeDSecureId;
+    params[BaseRequestBody.fieldSessionId] = sessionId;
     params[BaseRequestBody.fieldPaymentOperation] = paymentOperation;
-    params[BaseRequestBody.fieldCallbackUrl] = callbackUrl;
-    params[BaseRequestBody.fieldPaymentIntentId] = paymentIntentId;
-    
+    params[BaseRequestBody.fieldCustomerPhoneNumber] = customerPhoneNumber;
+    params[BaseRequestBody.fieldCustomerPhoneCountryCode] =
+        customerPhoneCountryCode;
+    params[BaseRequestBody.fieldPaymentMethod] = paymentMethod!.toMap();
+    params[BaseRequestBody.fieldReturnUrl] = returnUrl;
+    params[BaseRequestBody.fieldSource] = source;
 
-    return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
+    return params
+      ..removeWhere(
+          (key, value) => value == null || (value is String && value.isEmpty));
   }
+
+  @override
   toString() {
-    return 'PayDirectRequestBody{_threeDSecureId: $_threeDSecureId, _orderId: $_orderId, _amount: $_amount, _currency: $_currency, _paymentMethod: $_paymentMethod, paymentOperation: $paymentOperation, callbackUrl: $callbackUrl, paymentIntentId: $paymentIntentId}';
+    return 'PayDirectRequestBody{orderId: $orderId, threeDSecureId: $threeDSecureId, sessionId: $sessionId, paymentOperation: $paymentOperation, customerPhoneNumber: $customerPhoneNumber, customerPhoneCountryCode: $customerPhoneCountryCode, paymentMethod: $paymentMethod, returnUrl: $returnUrl, source: $source}';
   }
 }

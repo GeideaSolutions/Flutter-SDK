@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:geideapay/common/geidea.dart';
-
 mixin BaseApiService {
 
-  final String baseUrl = 'https://api.merchant.geidea.net/pgw/api';
+  // final String baseUrl = 'https://api.merchant.geidea.net/pgw/api';
 
   Map<String, String> headers = {};
 

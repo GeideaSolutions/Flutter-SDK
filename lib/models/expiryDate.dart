@@ -14,5 +14,10 @@ class ExpiryDate {
   String toString() {
     return 'ExpiryDate{month: $month, year: $year}';
   }
-  
+
+  @override
+  Map<String, dynamic>? toMap() {
+    return {"month": month, "year": year};
+  }
+
 }

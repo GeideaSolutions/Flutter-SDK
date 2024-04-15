@@ -20,20 +20,20 @@ class PayTransactionManager extends BaseTransactionManager {
   CaptureRequestBody? captureRequestBody;
   PayTransactionManager(
       {required this.service,
-        this.payDirectRequestBody,
-        this.payTokenRequestBody,
-        this.refundRequestBody,
-        this.captureRequestBody,
-        this.cancelRequestBody,
-        required String publicKey, required String apiPassword})
-      : super(publicKey: publicKey, apiPassword: apiPassword);
+      this.payDirectRequestBody,
+      this.payTokenRequestBody,
+      this.refundRequestBody,
+      this.captureRequestBody,
+      this.cancelRequestBody,
+      required String publicKey,
+      required String apiPassword,
+      required String baseUrl})
+      : super(publicKey: publicKey, apiPassword: apiPassword, baseUrl: baseUrl);
 
   @override
-  postInitiate() {
+  postInitiate() {}
 
-  }
-
-  Future<OrderApiResponse> payDirect() async{
+  Future<OrderApiResponse> payDirect() async {
     try {
       await initiate();
       return sendPayDirectOnServer();
@@ -42,17 +42,13 @@ class PayTransactionManager extends BaseTransactionManager {
         setProcessingOff();
       }
       return OrderApiResponse(
-          detailedResponseMessage: e.toString(),
-          responseCode: "-1");
+          detailedResponseMessage: e.toString(), responseCode: "-1");
     }
   }
 
-
   Future<OrderApiResponse> sendPayDirectOnServer() {
-    Future<OrderApiResponse> future =
-    service.directPay(
-        payDirectRequestBody?.paramsMap(),
-        publicKey, apiPassword);
+    Future<OrderApiResponse> future = service.directPay(
+        payDirectRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
     return handlePayDirectApiServerResponse(future);
   }
 
@@ -66,7 +62,7 @@ class PayTransactionManager extends BaseTransactionManager {
     }
   }
 
-  Future<OrderApiResponse> refund() async{
+  Future<OrderApiResponse> refund() async {
     try {
       await initiate();
       return sendRefundOnServer();
@@ -75,21 +71,17 @@ class PayTransactionManager extends BaseTransactionManager {
         setProcessingOff();
       }
       return OrderApiResponse(
-          detailedResponseMessage: e.toString(),
-          responseCode: "-1");
+          detailedResponseMessage: e.toString(), responseCode: "-1");
     }
   }
 
-
   Future<OrderApiResponse> sendRefundOnServer() {
-    Future<OrderApiResponse> future =
-    service.refund(
-        refundRequestBody?.paramsMap(),
-        publicKey, apiPassword);
+    Future<OrderApiResponse> future = service.refund(
+        refundRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
     return handlePostPayOperationApiServerResponse(future);
   }
 
-  Future<OrderApiResponse> cancel() async{
+  Future<OrderApiResponse> cancel() async {
     try {
       await initiate();
       return sendCancelOnServer();
@@ -98,20 +90,17 @@ class PayTransactionManager extends BaseTransactionManager {
         setProcessingOff();
       }
       return OrderApiResponse(
-          detailedResponseMessage: e.toString(),
-          responseCode: "-1");
+          detailedResponseMessage: e.toString(), responseCode: "-1");
     }
   }
 
   Future<OrderApiResponse> sendCancelOnServer() {
-    Future<OrderApiResponse> future =
-    service.cancel(
-        cancelRequestBody?.paramsMap(),
-        publicKey, apiPassword);
+    Future<OrderApiResponse> future = service.cancel(
+        cancelRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
     return handlePostPayOperationApiServerResponse(future);
   }
 
-  Future<OrderApiResponse> voidOperation() async{
+  Future<OrderApiResponse> voidOperation() async {
     try {
       await initiate();
       return sendVoidOnServer();
@@ -120,20 +109,17 @@ class PayTransactionManager extends BaseTransactionManager {
         setProcessingOff();
       }
       return OrderApiResponse(
-          detailedResponseMessage: e.toString(),
-          responseCode: "-1");
+          detailedResponseMessage: e.toString(), responseCode: "-1");
     }
   }
 
   Future<OrderApiResponse> sendVoidOnServer() {
-    Future<OrderApiResponse> future =
-    service.voidOperation(
-        refundRequestBody?.paramsMap(),
-        publicKey, apiPassword);
+    Future<OrderApiResponse> future = service.voidOperation(
+        refundRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
     return handlePostPayOperationApiServerResponse(future);
   }
 
-  Future<OrderApiResponse> capture() async{
+  Future<OrderApiResponse> capture() async {
     try {
       await initiate();
       return sendCaptureOnServer();
@@ -142,16 +128,13 @@ class PayTransactionManager extends BaseTransactionManager {
         setProcessingOff();
       }
       return OrderApiResponse(
-          detailedResponseMessage: e.toString(),
-          responseCode: "-1");
+          detailedResponseMessage: e.toString(), responseCode: "-1");
     }
   }
 
   Future<OrderApiResponse> sendCaptureOnServer() {
-    Future<OrderApiResponse> future =
-    service.capture(
-        captureRequestBody?.paramsMap(),
-        publicKey, apiPassword);
+    Future<OrderApiResponse> future = service.capture(
+        captureRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
     return handlePostPayOperationApiServerResponse(future);
   }
 
@@ -165,9 +148,7 @@ class PayTransactionManager extends BaseTransactionManager {
     }
   }
 
-
-  Future<OrderApiResponse> _initApiResponse(
-      OrderApiResponse? apiResponse) {
+  Future<OrderApiResponse> _initApiResponse(OrderApiResponse? apiResponse) {
     apiResponse ??= OrderApiResponse.unknownServerResponse();
 
     return handleOrderApiResponse(apiResponse);
@@ -184,10 +165,10 @@ class PayTransactionManager extends BaseTransactionManager {
     }
 
     if (code != '000') {
-      return notifyPayProcessingError(AuthenticationException(apiResponse.detailedResponseMessage!));
+      return notifyPayProcessingError(
+          AuthenticationException(apiResponse.detailedResponseMessage!));
     }
 
     return notifyPayProcessingError(GeideaException(Strings.unKnownResponse));
   }
-
 }
