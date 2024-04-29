@@ -66,6 +66,8 @@ abstract class BaseRequestBody {
   static const String fieldJavaEnabled = "javaEnabled";
   static const String fieldJavaScriptEnabled = "javaScriptEnabled";
   static const String fieldTimeZone = "timeZone";
+  static const String fieldMerchantPublicKey = "merchantPublicKey";
+  static const String fieldReceiverIdKey = "receiverId";
 
   Map<String, Object?> paramsMap();
 }

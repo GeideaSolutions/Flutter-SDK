@@ -1,5 +1,7 @@
 import 'package:geideapay/api/response/order_api_response.dart';
 
+import '../../response/request_pay_api_response.dart';
+
 abstract class PayServiceContract {
   Future<OrderApiResponse> directPay(Map<String, Object?>? fields,
       String publicKey, String apiPassword, String baseUrl);
@@ -17,5 +19,8 @@ abstract class PayServiceContract {
       String publicKey, String apiPassword, String baseUrl);
 
   Future<OrderApiResponse> voidOperation(Map<String, Object?>? fields,
+      String publicKey, String apiPassword, String baseUrl);
+
+  Future<RequestPayApiResponse> requestToPay(Map<String, Object?>? fields,
       String publicKey, String apiPassword, String baseUrl);
 }

@@ -9,6 +9,8 @@ import 'package:geideapay/common/my_strings.dart';
 import 'package:geideapay/common/extensions.dart';
 import 'package:http/http.dart' as http;
 
+import '../response/request_pay_api_response.dart';
+
 class PayService with BaseApiService implements PayServiceContract {
   @override
   Future<OrderApiResponse> directPay(Map<String, Object?>? fields,
@@ -52,6 +54,13 @@ class PayService with BaseApiService implements PayServiceContract {
     return genResponse(url, fields, publicKey, apiPassword);
   }
 
+  @override
+  Future<RequestPayApiResponse> requestToPay(Map<String, Object?>? fields,
+      String publicKey, String apiPassword, String baseUrl) async {
+    var url = '$baseUrl/meeza/api/v2/direct/transaction/requestToPay';
+    return genRequestPayResponse(url, fields, publicKey, apiPassword);
+  }
+
   Future<OrderApiResponse> genResponse(String url, Map<String, Object?>? fields,
       String publicKey, String apiPassword) async {
     genHeaders(publicKey, apiPassword);
@@ -66,6 +75,27 @@ class PayService with BaseApiService implements PayServiceContract {
       case HttpStatus.ok:
         Map<String, dynamic> responseBody = json.decode(body);
         return OrderApiResponse.fromMap(responseBody);
+      case HttpStatus.gatewayTimeout:
+        throw PayException('Gateway timeout error');
+      default:
+        throw PayException(Strings.unKnownResponse);
+    }
+  }
+
+  Future<RequestPayApiResponse> genRequestPayResponse(String url, Map<String, Object?>? fields,
+      String publicKey, String apiPassword) async {
+    genHeaders(publicKey, apiPassword);
+
+    http.Response response = await http.post(url.toUri(),
+        body: jsonEncode(fields), headers: headers);
+    var body = response.body;
+
+    var statusCode = response.statusCode;
+
+    switch (statusCode) {
+      case HttpStatus.ok:
+        Map<String, dynamic> responseBody = json.decode(body);
+        return RequestPayApiResponse.fromMap(responseBody);
       case HttpStatus.gatewayTimeout:
         throw PayException('Gateway timeout error');
       default:

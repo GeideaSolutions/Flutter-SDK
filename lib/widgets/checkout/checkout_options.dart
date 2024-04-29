@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:geideapay/models/address.dart';
+import 'package:geideapay/models/qr_configuration.dart';
 
 class CheckoutOptions {
   final double amount;
@@ -19,26 +20,31 @@ class CheckoutOptions {
   Color? textColor;
   Color? payButtonColor;
   Color? cancelButtonColor;
+  QRConfiguration? qrConfiguration;
 
-  CheckoutOptions(this.amount, this.currency,
-      {this.callbackUrl,
-        this.returnUrl,
-        this.cardOnFile,
-        this.merchantReferenceID,
-        this.paymentOperation,
-        this.billingAddress,
-        this.shippingAddress,
-        this.customerEmail,
-        this.paymentIntentId,
-        this.backgroundColor,
-        this.cardColor,
-        this.textColor,
-        this.payButtonColor,
-        this.cancelButtonColor,
-        this.lang,
-        this.showAddress,
-        this.showSaveCard,
-        this.showEmail}) {
+  CheckoutOptions(
+    this.amount,
+    this.currency, {
+    this.callbackUrl,
+    this.returnUrl,
+    this.cardOnFile,
+    this.merchantReferenceID,
+    this.paymentOperation,
+    this.billingAddress,
+    this.shippingAddress,
+    this.customerEmail,
+    this.paymentIntentId,
+    this.backgroundColor,
+    this.cardColor,
+    this.textColor,
+    this.payButtonColor,
+    this.cancelButtonColor,
+    this.lang,
+    this.showAddress,
+    this.showSaveCard,
+    this.showEmail,
+    this.qrConfiguration,
+  }) {
     if (paymentOperation != null && paymentOperation!.startsWith("Default")) {
       paymentOperation = null;
     }

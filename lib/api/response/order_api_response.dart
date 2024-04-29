@@ -3,7 +3,6 @@ import 'package:geideapay/common/my_strings.dart';
 import 'package:geideapay/models/order.dart';
 
 class OrderApiResponse extends ApiResponse {
-
   Order? order;
 
   OrderApiResponse.unknownServerResponse() {
@@ -51,8 +50,7 @@ class OrderApiResponse extends ApiResponse {
     };
   }
 
-  OrderApiResponse.defaults()
-  {
+  OrderApiResponse.defaults() {
     detailedResponseMessage = Strings.userTerminated;
   }
 }

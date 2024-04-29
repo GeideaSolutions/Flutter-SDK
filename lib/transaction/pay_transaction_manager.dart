@@ -5,11 +5,14 @@ import 'package:geideapay/api/request/capture_request_body.dart';
 import 'package:geideapay/api/request/pay_direct_request_body.dart';
 import 'package:geideapay/api/request/pay_token_request_body.dart';
 import 'package:geideapay/api/request/refund_request_body.dart';
+import 'package:geideapay/api/request/request_to_pay_request_body.dart';
 import 'package:geideapay/api/service/contracts/pay_service_contract.dart';
 import 'package:geideapay/common/exceptions.dart';
 import 'package:geideapay/common/my_strings.dart';
 import 'package:geideapay/api/response/order_api_response.dart';
 import 'package:geideapay/transaction/base_transaction_manager.dart';
+
+import '../api/response/request_pay_api_response.dart';
 
 class PayTransactionManager extends BaseTransactionManager {
   PayDirectRequestBody? payDirectRequestBody;
@@ -18,6 +21,7 @@ class PayTransactionManager extends BaseTransactionManager {
   RefundRequestBody? refundRequestBody;
   CancelRequestBody? cancelRequestBody;
   CaptureRequestBody? captureRequestBody;
+  RequestToPayRequestBody? requestToPayRequestBody;
   PayTransactionManager(
       {required this.service,
       this.payDirectRequestBody,
@@ -25,6 +29,7 @@ class PayTransactionManager extends BaseTransactionManager {
       this.refundRequestBody,
       this.captureRequestBody,
       this.cancelRequestBody,
+      this.requestToPayRequestBody,
       required String publicKey,
       required String apiPassword,
       required String baseUrl})
@@ -138,6 +143,25 @@ class PayTransactionManager extends BaseTransactionManager {
     return handlePostPayOperationApiServerResponse(future);
   }
 
+  Future<RequestPayApiResponse> requestToPay() async {
+    try {
+      await initiate();
+      return sendRequestToPayOnServer();
+    } catch (e) {
+      if (e is! ProcessingException) {
+        setProcessingOff();
+      }
+      return RequestPayApiResponse(
+          detailedResponseMessage: e.toString(), responseCode: "-1");
+    }
+  }
+
+  Future<RequestPayApiResponse> sendRequestToPayOnServer() {
+    Future<RequestPayApiResponse> future = service.requestToPay(
+        requestToPayRequestBody?.paramsMap(), publicKey, apiPassword, baseUrl);
+    return handleRequestToPayApiServerResponse(future);
+  }
+
   Future<OrderApiResponse> handlePostPayOperationApiServerResponse(
       Future<OrderApiResponse> future) async {
     try {
@@ -170,5 +194,39 @@ class PayTransactionManager extends BaseTransactionManager {
     }
 
     return notifyPayProcessingError(GeideaException(Strings.unKnownResponse));
+  }
+
+  Future<RequestPayApiResponse> handleRequestToPayApiServerResponse(
+      Future<RequestPayApiResponse> future) async {
+    try {
+      final apiResponse = await future;
+      return _initRequestToPayApiResponse(apiResponse);
+    } catch (e) {
+      return notifyRequestPayProcessingError(e);
+    }
+  }
+
+  Future<RequestPayApiResponse> _initRequestToPayApiResponse(
+      RequestPayApiResponse? apiResponse) {
+    apiResponse ??= RequestPayApiResponse.unknownServerResponse();
+    return handleRequestToPayApiResponse(apiResponse);
+  }
+
+  Future<RequestPayApiResponse> handleRequestToPayApiResponse(
+      RequestPayApiResponse apiResponse) async {
+    var code = apiResponse.responseCode?.toLowerCase();
+
+    if (code == '00000') {
+      setProcessingOff();
+      return onRequestPaySuccess(apiResponse);
+    }
+
+    if (code != '00000') {
+      return notifyRequestPayProcessingError(
+          AuthenticationException(apiResponse.responseDescription.toString()));
+    }
+
+    return notifyRequestPayProcessingError(
+        GeideaException(Strings.unKnownResponse));
   }
 }
