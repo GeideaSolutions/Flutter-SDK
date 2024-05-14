@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:geideapay/api/response/order_api_response.dart';
+import 'package:geideapay/api/response/payment_intent_api_response.dart';
+import 'package:geideapay/api/response/payment_notification_api_response.dart';
 import 'package:geideapay/api/service/base_service.dart';
 import 'package:geideapay/api/service/contracts/pay_service_contract.dart';
 import 'package:geideapay/common/exceptions.dart';
@@ -61,6 +63,31 @@ class PayService with BaseApiService implements PayServiceContract {
     return genRequestPayResponse(url, fields, publicKey, apiPassword);
   }
 
+  @override
+  Future<PaymentIntentApiResponse> paymentIntent(String paymentIntentId,
+      String publicKey, String apiPassword, String baseUrl) {
+    var url = '$baseUrl/payment-intent/api/v1/paymentIntent/$paymentIntentId';
+    return genPaymentIntentResponse(
+        url, paymentIntentId, publicKey, apiPassword);
+  }
+
+  @override
+  Future<OrderApiResponse> orderDetail(String merchantPublicKey, String orderId,
+      String publicKey, String apiPassword, String baseUrl) {
+    var url = '$baseUrl/pgw/api/v1/order/$merchantPublicKey/$orderId';
+    return genResponseGet(url, publicKey, apiPassword);
+  }
+
+  @override
+  Future<PaymentNotificationApiResponse> paymentNotification(
+      Map<String, Object?>? fields,
+      String publicKey,
+      String apiPassword,
+      String baseUrl) {
+    var url = '$baseUrl/pgw/api/v1/MeezaPaymentNotification';
+    return genPaymentNotificaitonResponse(url, fields, publicKey, apiPassword);
+  }
+
   Future<OrderApiResponse> genResponse(String url, Map<String, Object?>? fields,
       String publicKey, String apiPassword) async {
     genHeaders(publicKey, apiPassword);
@@ -82,8 +109,11 @@ class PayService with BaseApiService implements PayServiceContract {
     }
   }
 
-  Future<RequestPayApiResponse> genRequestPayResponse(String url, Map<String, Object?>? fields,
-      String publicKey, String apiPassword) async {
+  Future<RequestPayApiResponse> genRequestPayResponse(
+      String url,
+      Map<String, Object?>? fields,
+      String publicKey,
+      String apiPassword) async {
     genHeaders(publicKey, apiPassword);
 
     http.Response response = await http.post(url.toUri(),
@@ -96,6 +126,77 @@ class PayService with BaseApiService implements PayServiceContract {
       case HttpStatus.ok:
         Map<String, dynamic> responseBody = json.decode(body);
         return RequestPayApiResponse.fromMap(responseBody);
+      case HttpStatus.gatewayTimeout:
+        throw PayException('Gateway timeout error');
+      default:
+        throw PayException(Strings.unKnownResponse);
+    }
+  }
+
+  Future<PaymentIntentApiResponse> genPaymentIntentResponse(String url,
+      String paymentIntentId, String publicKey, String apiPassword) async {
+    genHeaders(publicKey, apiPassword);
+
+    http.Response response = await http.get(url.toUri(), headers: headers);
+    var body = response.body;
+
+    var statusCode = response.statusCode;
+
+    switch (statusCode) {
+      case HttpStatus.ok:
+        Map<String, dynamic> responseBody = json.decode(body);
+        return PaymentIntentApiResponse.fromMap(responseBody);
+      case HttpStatus.gatewayTimeout:
+        throw PayException('Gateway timeout error');
+      default:
+        throw PayException(Strings.unKnownResponse);
+    }
+  }
+
+  Future<OrderApiResponse> genResponseGet(
+      String url, String publicKey, String apiPassword) async {
+    genHeaders(publicKey, apiPassword);
+
+    http.Response response = await http.get(url.toUri(), headers: headers);
+    var body = response.body;
+
+    var statusCode = response.statusCode;
+
+    switch (statusCode) {
+      case HttpStatus.ok:
+        Map<String, dynamic> responseBody = json.decode(body);
+        return OrderApiResponse.fromMap(responseBody);
+      case HttpStatus.gatewayTimeout:
+        throw PayException('Gateway timeout error');
+      case HttpStatus.badRequest:
+        Map<String, dynamic> responseBody = json.decode(body);
+        return OrderApiResponse.fromMap(responseBody);
+      default:
+        throw PayException(Strings.unKnownResponse);
+    }
+  }
+
+  Future<PaymentNotificationApiResponse> genPaymentNotificaitonResponse(
+      String url,
+      Map<String, Object?>? fields,
+      String publicKey,
+      String apiPassword) async {
+    genHeaders(publicKey, apiPassword);
+
+    http.Response response = await http.post(url.toUri(),
+        body: jsonEncode(fields), headers: headers);
+    var body = response.body;
+
+    var statusCode = response.statusCode;
+
+    switch (statusCode) {
+      case HttpStatus.ok:
+        if (body.isNotEmpty) {
+          Map<String, dynamic> responseBody = json.decode(body);
+          return PaymentNotificationApiResponse.fromJson(responseBody);
+        } else {
+          return PaymentNotificationApiResponse(status: 200);
+        }
       case HttpStatus.gatewayTimeout:
         throw PayException('Gateway timeout error');
       default:

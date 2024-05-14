@@ -22,6 +22,8 @@ class PayTransactionManager extends BaseTransactionManager {
   CancelRequestBody? cancelRequestBody;
   CaptureRequestBody? captureRequestBody;
   RequestToPayRequestBody? requestToPayRequestBody;
+  String? merchantPublicKey;
+  String? orderId;
   PayTransactionManager(
       {required this.service,
       this.payDirectRequestBody,
@@ -30,6 +32,8 @@ class PayTransactionManager extends BaseTransactionManager {
       this.captureRequestBody,
       this.cancelRequestBody,
       this.requestToPayRequestBody,
+      this.merchantPublicKey,
+      this.orderId,
       required String publicKey,
       required String apiPassword,
       required String baseUrl})
@@ -162,6 +166,25 @@ class PayTransactionManager extends BaseTransactionManager {
     return handleRequestToPayApiServerResponse(future);
   }
 
+  Future<OrderApiResponse> getOrderDetail() async {
+    try {
+      await initiate();
+      return sendOrderDetailOnServer();
+    } catch (e) {
+      if (e is! ProcessingException) {
+        setProcessingOff();
+      }
+      return OrderApiResponse(
+          detailedResponseMessage: e.toString(), responseCode: "-1");
+    }
+  }
+
+  Future<OrderApiResponse> sendOrderDetailOnServer() {
+    Future<OrderApiResponse> future = service.orderDetail(
+        merchantPublicKey!, orderId!, publicKey, apiPassword, baseUrl);
+    return handlePostPayOperationApiServerResponse(future);
+  }
+
   Future<OrderApiResponse> handlePostPayOperationApiServerResponse(
       Future<OrderApiResponse> future) async {
     try {
@@ -182,15 +205,19 @@ class PayTransactionManager extends BaseTransactionManager {
       OrderApiResponse apiResponse) async {
     var status = apiResponse.responseMessage?.toLowerCase();
     var code = apiResponse.responseCode?.toLowerCase();
-
-    if (status == 'success' && code == '000') {
+    if (code == '000') {
       setProcessingOff();
       return onPaySuccess(apiResponse);
     }
 
     if (code != '000') {
-      return notifyPayProcessingError(
-          AuthenticationException(apiResponse.detailedResponseMessage!));
+      if (apiResponse.otherResponse != null) {
+        setProcessingOff();
+        return onPaySuccess(apiResponse);
+      } else {
+        return notifyPayProcessingError(
+            AuthenticationException(apiResponse.detailedResponseMessage!));
+      }
     }
 
     return notifyPayProcessingError(GeideaException(Strings.unKnownResponse));
