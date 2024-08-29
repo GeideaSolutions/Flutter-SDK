@@ -41,6 +41,8 @@ import 'package:geideapay/widgets/checkout/credit_card_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
+import '../widgets/hpp/hpp_checkout.dart';
+
 class GeideapayPlugin {
   bool _sdkInitialized = false;
   String _publicKey = "";
@@ -430,6 +432,51 @@ class GeideapayPlugin {
     );
 
     return orderDetailResponse;
+  }
+
+  Future<OrderApiResponse> checkoutHPP(
+      {required BuildContext context,
+      required CheckoutOptions checkoutOptions}) async {
+    _performChecks();
+
+    final _geideapay =
+        _Geideapay(publicKey, apiPassword, serverEnvironmentModel!.apiBaseUrl);
+
+    CheckoutRequestBody checkoutRequestBodyOfQRCode =
+        CheckoutRequestBody(checkoutOptions, null);
+
+    checkoutRequestBodyOfQRCode.updateDirectSessionRequestBody(
+        publicKey, apiPassword);
+
+    DirectSessionApiResponse directSessionApiResponse =
+        await _geideapay.createSession(
+            directSessionRequestBody:
+                checkoutRequestBodyOfQRCode.directSessionRequestBody);
+    print(directSessionApiResponse);
+    if (directSessionApiResponse.session == null) {
+      throw (directSessionApiResponse.detailedResponseMessage!);
+    }
+
+    Map<String, String>? resultResponse = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HPPCheckout(
+          hppURL: serverEnvironmentModel!.hppBaseUrl,
+          sessionId: directSessionApiResponse.session!.id!,
+          returnURL: directSessionApiResponse.session?.returnUrl,
+        ),
+      ),
+    );
+
+    if (resultResponse == null && resultResponse is! Map<String, String>) {
+      throw (Strings.unKnownResponse);
+    }
+
+    Map<String, dynamic> mainReturnUriParam = {};
+    mainReturnUriParam.addAll(resultResponse);
+    mainReturnUriParam.addAll({"order": resultResponse});
+
+    return OrderApiResponse.fromMap(mainReturnUriParam);
   }
 
   _validateSdkInitialized() {

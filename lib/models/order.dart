@@ -194,12 +194,13 @@ class Order {
 
   @override
   String toString() {
-    return 'Order{amount: $amount, tipAmount: $tipAmount, convenienceFeeAmount: $convenienceFeeAmount, totalAmount: $totalAmount, totalAuthorizedAmount: $totalAuthorizedAmount, totalCapturedAmount: $totalCapturedAmount, totalRefundedAmount: $totalRefundedAmount, orderId: $orderId, currency: $currency, language: $language, detailedStatus: $detailedStatus, status: $status, threeDSecureId: $threeDSecureId, merchantId: $merchantId, merchantPublicKey: $merchantPublicKey, parentOrderId: $parentOrderId, merchantReferenceId: $merchantReferenceId, callbackUrl: $callbackUrl, customerEmail: $customerEmail, returnUrl: $returnUrl, tokenId: $tokenId, initiatedBy: $initiatedBy, agreementId: $agreementId, agreementType: $agreementType, paymentOperation: $paymentOperation, custom: $custom, paymentMethods: $paymentMethods, platform: $platform, description: $description, customerReferenceId: $customerReferenceId, customerId: $customerId, recurrence: $recurrence, createdDate: $createdDate, createdBy: $createdBy, updatedDate: $updatedDate, updatedBy: $updatedBy, billingAddress: $billingAddress, shippingAddress: $shippingAddress, cardOnFile: $cardOnFile, setDefaultPaymentMethod: $setDefaultPaymentMethod, restrictPaymentMethods: $restrictPaymentMethods, createCustomer: $createCustomer, isTokenPayment: $isTokenPayment, paymentIntent: $paymentIntent, paymentMethod: $paymentMethod, statementDescriptor: $statementDescriptor, transactions: $transactions}';
+    return 'Order${toMap()}';
   }
 
   @override
   Map<String, dynamic> toMap() {
     return {
+      "orderId": orderId,
       "amount": amount,
       "tipAmount": tipAmount,
       "convenienceFeeAmount": convenienceFeeAmount,
@@ -207,7 +208,6 @@ class Order {
       "totalAuthorizedAmount": totalAuthorizedAmount,
       "totalCapturedAmount": totalCapturedAmount,
       "totalRefundedAmount": totalRefundedAmount,
-      "orderId": orderId,
       "currency": currency,
       "language": language,
       "detailedStatus": detailedStatus,
