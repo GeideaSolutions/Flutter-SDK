@@ -86,7 +86,8 @@ class Session extends BaseRequestBody {
         json['platform'] != null ? Platform.fromJson(json['platform']) : null;
     paymentOptions = json['paymentOptions'];
     recurrence = json['recurrence'];
-    order = json['order'];
+    order = null;
+    // order = json['order'];
     items = json['items'];
     appearance = json['appearance'] != null
         ? Appearance.fromJson(json['appearance'])

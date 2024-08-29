@@ -21,6 +21,7 @@ class QRCodeScreen extends StatefulWidget {
     this.progressTextColor,
     this.backgroundColor,
     this.textColor,
+    this.onTimeChange,
   }) : super(key: key);
 
   final String? title;
@@ -37,6 +38,7 @@ class QRCodeScreen extends StatefulWidget {
   final Color? progressBackgroundColor;
   final Color? backgroundColor;
   final Color? textColor;
+  final VoidCallback? onTimeChange;
 
   @override
   State<QRCodeScreen> createState() => QRCodeScreenState();
@@ -44,7 +46,8 @@ class QRCodeScreen extends StatefulWidget {
 
 class QRCodeScreenState extends State<QRCodeScreen> {
   final CountDownController _controller = CountDownController();
-  final int _duration = 15;
+  final int _duration = 720;
+  int lastLoadSecond = 0;
 
   @override
   void initState() {
@@ -106,8 +109,8 @@ class QRCodeScreenState extends State<QRCodeScreen> {
                     duration: _duration,
                     initialDuration: _duration,
                     controller: _controller,
-                    width: 50,
-                    height: 50,
+                    width: 70,
+                    height: 70,
                     ringColor: widget.progressTextColor ?? Colors.grey[300]!,
                     ringGradient: null,
                     fillColor:
@@ -123,8 +126,8 @@ class QRCodeScreenState extends State<QRCodeScreen> {
                         color: widget.progressTextColor ?? Colors.grey[300]!,
                         fontWeight: FontWeight.bold),
                     textFormat: CountdownTextFormat.S,
-                    isReverse: false,
-                    isReverseAnimation: false,
+                    isReverse: true,
+                    isReverseAnimation: true,
                     isTimerTextShown: true,
                     autoStart: false,
                     onStart: () {
@@ -135,7 +138,17 @@ class QRCodeScreenState extends State<QRCodeScreen> {
                       Navigator.pop(context);
                     },
                     onChange: (String timeStamp) {
-                      // debugPrint('Countdown Changed $timeStamp');
+                      try {
+                        int timeStampInt = int.parse(timeStamp);
+                        if (timeStampInt % 5 == 0 &&
+                            lastLoadSecond != timeStampInt) {
+                          lastLoadSecond = timeStampInt;
+                          if (widget.onTimeChange != null) {
+                            widget.onTimeChange!();
+                          }
+                          // debugPrint('Countdown Changed $timeStamp');
+                        }
+                      } catch (_) {}
                     },
                     timeFormatterFunction:
                         (defaultFormatterFunction, duration) {
@@ -202,6 +215,6 @@ class QRCodeScreenState extends State<QRCodeScreen> {
             ),
           ),
         ),
-        onWillPop: () => Future.value(false));
+        onWillPop: () => Future.value(true));
   }
 }

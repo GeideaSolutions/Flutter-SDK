@@ -147,7 +147,19 @@ class CircularCountDownTimerState extends State<CircularCountDownTimer>
     }
     if (widget.onChange != null) widget.onChange!(timeStamp);
 
-    return timeStamp;
+    try {
+      return _formattedTime(timeInSecond: int.parse(timeStamp));
+    } catch (_) {
+      return "00:00";
+    }
+  }
+
+  String _formattedTime({required int timeInSecond}) {
+    int sec = timeInSecond % 60;
+    int min = (timeInSecond / 60).floor();
+    String minute = min.toString().length <= 1 ? "0$min" : "$min";
+    String second = sec.toString().length <= 1 ? "0$sec" : "$sec";
+    return "$minute:$second";
   }
 
   void _setAnimation() {
@@ -304,14 +316,17 @@ class CircularCountDownTimerState extends State<CircularCountDownTimer>
                     widget.isTimerTextShown
                         ? Align(
                             alignment: FractionalOffset.center,
-                            child: Text(
-                              time,
-                              style: widget.textStyle ??
-                                  const TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                              textAlign: widget.textAlign,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Text(
+                                time,
+                                style: widget.textStyle ??
+                                    const TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),
+                                textAlign: widget.textAlign,
+                              ),
                             ),
                           )
                         : Container(),

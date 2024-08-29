@@ -1,34 +1,27 @@
 import 'package:geideapay/api/response/api_response.dart';
-import 'package:geideapay/api/response/other_response.dart';
-import 'package:geideapay/api/response/payment_notification_api_response.dart';
 import 'package:geideapay/common/my_strings.dart';
-import 'package:geideapay/models/order.dart';
+import 'package:geideapay/models/paymentIntent.dart';
 
-class OrderApiResponse extends ApiResponse {
-  Order? order;
-  PaymentNotificationApiResponse? paymentNotificationApiResponse;
-  OtherResponse? otherResponse;
+class PaymentIntentApiResponse extends ApiResponse {
+  PaymentIntent? paymentIntent;
 
-  OrderApiResponse.unknownServerResponse() {
+  PaymentIntentApiResponse.unknownServerResponse() {
     responseCode = '100';
     detailedResponseMessage = 'Unknown server response';
   }
 
-  OrderApiResponse.fromMap(Map<String, dynamic> map) {
-    order = map["order"] == null ? null : Order.fromMap(map["order"]);
-    otherResponse = OtherResponse.fromMap(map);
+  PaymentIntentApiResponse.fromMap(Map<String, dynamic> map) {
+    paymentIntent = map["paymentIntent"] == null ? null : PaymentIntent.fromMap(map["paymentIntent"]);
     fromMap(map);
   }
 
-  OrderApiResponse({
+  PaymentIntentApiResponse({
     responseCode,
     detailedResponseCode,
     responseMessage,
     detailedResponseMessage,
     language,
-    this.order,
-    this.paymentNotificationApiResponse,
-    this.otherResponse,
+    this.paymentIntent,
   }) : super(
           responseCode: responseCode,
           detailedResponseCode: detailedResponseCode,
@@ -39,15 +32,16 @@ class OrderApiResponse extends ApiResponse {
 
   @override
   String toString() {
-    return 'OrderApiResponse${otherResponse?.title != null ? otherResponse?.toJson() : toMap()}';
+    return 'PaymentIntentApiResponse{paymentIntent: $paymentIntent, '
+        'responseCode: $responseCode, detailedResponseCode: $detailedResponseCode, '
+        'responseMessage: $responseMessage, detailedResponseMessage: $detailedResponseMessage, '
+        'language: $language}';
   }
 
   @override
   Map<String, dynamic> toMap() {
     return {
-      "order": order?.toMap(),
-      "paymentNotificationApiResponse":
-          paymentNotificationApiResponse?.toJson(),
+      "paymentIntent": paymentIntent?.toMap(),
       "responseCode": responseCode,
       "detailedResponseCode": detailedResponseCode,
       "responseMessage": responseMessage,
@@ -56,7 +50,7 @@ class OrderApiResponse extends ApiResponse {
     };
   }
 
-  OrderApiResponse.defaults() {
+  PaymentIntentApiResponse.defaults() {
     detailedResponseMessage = Strings.userTerminated;
   }
 }
