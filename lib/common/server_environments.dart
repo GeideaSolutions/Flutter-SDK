@@ -14,8 +14,9 @@ class ServerEnvironment {
 class ServerEnvironmentModel {
   final String title;
   final String apiBaseUrl;
+  final String hppBaseUrl;
 
-  ServerEnvironmentModel(this.title, this.apiBaseUrl);
+  ServerEnvironmentModel(this.title, this.apiBaseUrl, this.hppBaseUrl);
 
   factory ServerEnvironmentModel.EGY_PROD() = _EGY_PROD;
 
@@ -31,28 +32,37 @@ class ServerEnvironmentModel {
 }
 
 class _EGY_PROD extends ServerEnvironmentModel {
-  _EGY_PROD() : super('EGY-PROD', 'https://api.merchant.geidea.net');
+  _EGY_PROD()
+      : super('EGY-PROD', 'https://api.merchant.geidea.net',
+            'https://www.merchant.geidea.net/hpp/checkout/?');
 }
 
 class _EGY_PREPROD extends ServerEnvironmentModel {
   _EGY_PREPROD()
-      : super('EGY-PREPROD', 'https://api-merchant.staging.geidea.net');
+      : super('EGY-PREPROD', 'https://api-merchant.staging.geidea.net',
+            'https://www.gd-pprod-infra.net/hpp/checkout/?');
 }
 
 class _UAE_PROD extends ServerEnvironmentModel {
-  _UAE_PROD() : super('UAE-PROD', 'https://api.merchant.geidea.ae');
+  _UAE_PROD()
+      : super('UAE-PROD', 'https://api.merchant.geidea.ae',
+            'https://payments.geidea.ae/hpp/checkout/?');
 }
 
 class _UAE_PREPROD extends ServerEnvironmentModel {
   _UAE_PREPROD()
-      : super('UAE-PREPROD', 'https://api-merchant.staging.geidea.ae');
+      : super('UAE-PREPROD', 'https://api-merchant.staging.geidea.ae',
+            'https://www.staging.geidea.ae/hpp/checkout/?');
 }
 
 class _KSA_PROD extends ServerEnvironmentModel {
-  _KSA_PROD() : super('KSA-PROD', 'https://api.ksamerchant.geidea.net');
+  _KSA_PROD()
+      : super('KSA-PROD', 'https://api.ksamerchant.geidea.net',
+            'https://www.ksamerchant.geidea.net/hpp/checkout/?');
 }
 
 class _KSA_PREPROD extends ServerEnvironmentModel {
   _KSA_PREPROD()
-      : super('KSA-PREPROD', 'https://api-ksamerchant.staging.geidea.net');
+      : super('KSA-PREPROD', 'https://api-ksamerchant.staging.geidea.net',
+            'https://www.gd-pprod-infra.net/hpp/checkout/?');
 }

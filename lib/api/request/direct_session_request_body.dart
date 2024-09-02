@@ -11,6 +11,7 @@ class DirectSessionRequestBody extends BaseRequestBody {
 
   // Optional fields
   final String? callbackUrl;
+  final String? returnUrl;
   final String? language;
   final bool? cardOnFile;
   final String? paymentIntentId;
@@ -24,6 +25,7 @@ class DirectSessionRequestBody extends BaseRequestBody {
     this.merchantReferenceID,
     this.signature, {
     this.callbackUrl,
+        this.returnUrl,
     this.language,
     this.cardOnFile = false,
     this.paymentIntentId,
@@ -42,6 +44,7 @@ class DirectSessionRequestBody extends BaseRequestBody {
     params[BaseRequestBody.fieldSignature] = signature;
 
     params[BaseRequestBody.fieldCallbackUrl] = callbackUrl;
+    params[BaseRequestBody.fieldReturnUrl] = returnUrl;
     params[BaseRequestBody.fieldLanguage] = language;
     params[BaseRequestBody.fieldCardOnFile] = cardOnFile;
     params[BaseRequestBody.fieldPaymentIntentId] = paymentIntentId;
@@ -58,6 +61,6 @@ class DirectSessionRequestBody extends BaseRequestBody {
 
   @override
   toString() {
-    return 'DirectSessionRequestBody{_amount: $_amount, _currency: $_currency, timestamp: $timestamp, merchantReferenceID: $merchantReferenceID, signature: $signature, callbackUrl: $callbackUrl, language: $language, cardOnFile: $cardOnFile, paymentIntentId: $paymentIntentId, paymentOperation: $paymentOperation, appearance: $appearance}';
+    return 'DirectSessionRequestBody{_amount: $_amount, _currency: $_currency, timestamp: $timestamp, merchantReferenceID: $merchantReferenceID, signature: $signature, callbackUrl: $callbackUrl, returnUrl: $returnUrl, language: $language, cardOnFile: $cardOnFile, paymentIntentId: $paymentIntentId, paymentOperation: $paymentOperation, appearance: $appearance}';
   }
 }

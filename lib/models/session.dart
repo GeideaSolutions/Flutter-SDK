@@ -1,5 +1,6 @@
 import 'package:geideapay/api/request/base/base_request_body.dart';
 import 'package:geideapay/models/appearance.dart';
+import 'package:geideapay/models/order.dart';
 import 'package:geideapay/models/paymentMethod.dart';
 
 class Session extends BaseRequestBody {
@@ -22,8 +23,8 @@ class Session extends BaseRequestBody {
   String? customer;
   String? paymentOptions;
   String? recurrence;
-  String? order;
-  String? items;
+  Order? order;
+  dynamic items;
   String? subscription;
   Appearance? appearance;
   PaymentMethod? paymentMethod;
@@ -86,7 +87,9 @@ class Session extends BaseRequestBody {
         json['platform'] != null ? Platform.fromJson(json['platform']) : null;
     paymentOptions = json['paymentOptions'];
     recurrence = json['recurrence'];
-    order = json['order'];
+    order = json['order'] != null
+        ? Order.fromMap(json['order'])
+        : null;
     items = json['items'];
     appearance = json['appearance'] != null
         ? Appearance.fromJson(json['appearance'])

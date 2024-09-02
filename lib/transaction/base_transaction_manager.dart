@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:geideapay/api/response/authentication_api_response.dart';
 import 'package:geideapay/api/response/base64_image_api_response.dart';
 import 'package:geideapay/api/response/direct_session_api_response.dart';
+import 'package:geideapay/api/response/payment_intent_api_response.dart';
+import 'package:geideapay/api/response/payment_notification_api_response.dart';
 import 'package:geideapay/common/exceptions.dart';
 import 'package:geideapay/api/response/order_api_response.dart';
 
@@ -102,6 +104,36 @@ abstract class BaseTransactionManager {
   }
 
   RequestPayApiResponse onRequestPaySuccess(RequestPayApiResponse apiResponse) {
+    return apiResponse;
+  }
+
+  PaymentIntentApiResponse notifyPaymentIntentProcessingError(Object e) {
+    setProcessingOff();
+
+    if (e is TimeoutException || e is SocketException) {
+      e = 'Please  check your internet connection or try again later';
+    }
+    return PaymentIntentApiResponse(
+        detailedResponseMessage: e.toString(), responseCode: "-1");
+  }
+
+  PaymentIntentApiResponse onPaymentIntentSuccess(
+      PaymentIntentApiResponse apiResponse) {
+    return apiResponse;
+  }
+
+  PaymentNotificationApiResponse notifyPaymentNotificationProcessingError(
+      Object e) {
+    setProcessingOff();
+
+    if (e is TimeoutException || e is SocketException) {
+      e = 'Please  check your internet connection or try again later';
+    }
+    return PaymentNotificationApiResponse(errors: e.toString(), status: -1);
+  }
+
+  PaymentNotificationApiResponse onPaymentNotificationSuccess(
+      PaymentNotificationApiResponse apiResponse) {
     return apiResponse;
   }
 }

@@ -2,26 +2,58 @@ import 'package:geideapay/models/address.dart';
 import 'package:geideapay/models/paymentIntent.dart';
 import 'package:geideapay/models/paymentMethod.dart';
 import 'package:geideapay/models/statementDescriptor.dart';
+import 'package:geideapay/models/summary.dart';
 import 'package:geideapay/models/transaction.dart';
 
 class Order {
+  double? amount,
+      tipAmount,
+      convenienceFeeAmount,
+      totalAmount,
+      totalAuthorizedAmount,
+      totalCapturedAmount,
+      totalRefundedAmount;
 
-  double? amount, tipAmount, convenienceFeeAmount, totalAmount,
-      totalAuthorizedAmount, totalCapturedAmount, totalRefundedAmount;
-
-  String? orderId, currency, language, detailedStatus, status, threeDSecureId,
-      merchantId, merchantPublicKey, parentOrderId, merchantReferenceId,
+  String? orderId,
+      currency,
+      language,
+      detailedStatus,
+      status,
+      threeDSecureId,
+      merchantId,
+      merchantPublicKey,
+      parentOrderId,
+      merchantReferenceId,
       callbackUrl,
-      customerEmail, returnUrl, tokenId, initiatedBy, agreementId,
-      agreementType, paymentOperation, custom,
-      paymentMethods, platform, description, customerReferenceId, customerId,
-      recurrence, createdDate, createdBy, updatedDate, updatedBy;
+      customerEmail,
+      returnUrl,
+      tokenId,
+      initiatedBy,
+      agreementId,
+      agreementType,
+      paymentOperation,
+      custom,
+      paymentMethods,
+      platform,
+      description,
+      customerReferenceId,
+      customerId,
+      recurrence,
+      createdDate,
+      createdBy,
+      updatedDate,
+      updatedBy,
+      paymentIntentId,
+      orderStatus;
 
   Address? billingAddress;
   Address? shippingAddress;
 
-  bool? cardOnFile, setDefaultPaymentMethod, restrictPaymentMethods,
-      createCustomer, isTokenPayment;
+  bool? cardOnFile,
+      setDefaultPaymentMethod,
+      restrictPaymentMethods,
+      createCustomer,
+      isTokenPayment;
 
   PaymentIntent? paymentIntent;
 
@@ -31,28 +63,86 @@ class Order {
 
   List<Transaction>? transactions;
 
-  Order(
-      {this.amount, this.tipAmount, this.convenienceFeeAmount, this.totalAmount, this.totalAuthorizedAmount, this.totalCapturedAmount, this.totalRefundedAmount, this.orderId, this.currency, this.language, this.detailedStatus, this.status, this.threeDSecureId, this.merchantId, this.merchantPublicKey, this.parentOrderId, this.merchantReferenceId, this.callbackUrl, this.customerEmail, this.returnUrl, this.tokenId, this.initiatedBy, this.agreementId, this.agreementType, this.paymentOperation, this.custom, this.paymentMethods, this.platform, this.description, this.customerReferenceId, this.customerId, this.recurrence, this.createdDate, this.createdBy, this.updatedDate, this.updatedBy, this.billingAddress, this.shippingAddress, this.cardOnFile, this.setDefaultPaymentMethod, this.restrictPaymentMethods, this.createCustomer, this.isTokenPayment, this.paymentIntent, this.paymentMethod, this.statementDescriptor, this.transactions});
+  dynamic integrationType, items;
+
+  Summary? summary;
+
+  Order({
+    this.amount,
+    this.tipAmount,
+    this.convenienceFeeAmount,
+    this.totalAmount,
+    this.totalAuthorizedAmount,
+    this.totalCapturedAmount,
+    this.totalRefundedAmount,
+    this.orderId,
+    this.currency,
+    this.language,
+    this.detailedStatus,
+    this.status,
+    this.threeDSecureId,
+    this.merchantId,
+    this.merchantPublicKey,
+    this.parentOrderId,
+    this.merchantReferenceId,
+    this.callbackUrl,
+    this.customerEmail,
+    this.returnUrl,
+    this.tokenId,
+    this.initiatedBy,
+    this.agreementId,
+    this.agreementType,
+    this.paymentOperation,
+    this.custom,
+    this.paymentMethods,
+    this.platform,
+    this.description,
+    this.customerReferenceId,
+    this.customerId,
+    this.recurrence,
+    this.createdDate,
+    this.createdBy,
+    this.updatedDate,
+    this.updatedBy,
+    this.billingAddress,
+    this.shippingAddress,
+    this.cardOnFile,
+    this.setDefaultPaymentMethod,
+    this.restrictPaymentMethods,
+    this.createCustomer,
+    this.isTokenPayment,
+    this.paymentIntent,
+    this.paymentMethod,
+    this.statementDescriptor,
+    this.transactions,
+    this.orderStatus,
+    this.paymentIntentId,
+    this.integrationType,
+    this.items,
+    this.summary,
+  });
 
   Order.fromMap(Map<String, dynamic> map) {
     amount =
-    map['amount'] == null ? null : double.parse(map['amount'].toString());
-    tipAmount =
-    map['tipAmount'] == null ? null : double.parse(map['tipAmount'].toString());
-    convenienceFeeAmount =
-    map['convenienceFeeAmount'] == null ? null : double.parse(
-        map['convenienceFeeAmount'].toString());
-    totalAmount = map['totalAmount'] == null ? null : double.parse(
-        map['totalAmount'].toString());
-    totalAuthorizedAmount =
-    map['totalAuthorizedAmount'] == null ? null : double.parse(
-        map['totalAuthorizedAmount'].toString());
-    totalCapturedAmount =
-    map['totalCapturedAmount'] == null ? null : double.parse(
-        map['totalCapturedAmount'].toString());
-    totalRefundedAmount =
-    map['totalRefundedAmount'] == null ? null : double.parse(
-        map['totalRefundedAmount'].toString());
+        map['amount'] == null ? null : double.parse(map['amount'].toString());
+    tipAmount = map['tipAmount'] == null
+        ? null
+        : double.parse(map['tipAmount'].toString());
+    convenienceFeeAmount = map['convenienceFeeAmount'] == null
+        ? null
+        : double.parse(map['convenienceFeeAmount'].toString());
+    totalAmount = map['totalAmount'] == null
+        ? null
+        : double.parse(map['totalAmount'].toString());
+    totalAuthorizedAmount = map['totalAuthorizedAmount'] == null
+        ? null
+        : double.parse(map['totalAuthorizedAmount'].toString());
+    totalCapturedAmount = map['totalCapturedAmount'] == null
+        ? null
+        : double.parse(map['totalCapturedAmount'].toString());
+    totalRefundedAmount = map['totalRefundedAmount'] == null
+        ? null
+        : double.parse(map['totalRefundedAmount'].toString());
     orderId = map['orderId'];
     currency = map['currency'];
     language = map['language'];
@@ -82,6 +172,8 @@ class Order {
     createdBy = map['createdBy'];
     updatedDate = map['updatedDate'];
     updatedBy = map['updatedBy'];
+    orderStatus = map['orderStatus'];
+    paymentIntentId = map['paymentIntentId'];
     billingAddress = map['billingAddress'] != null
         ? Address.fromMap(map['billingAddress'])
         : null;
@@ -93,25 +185,33 @@ class Order {
     restrictPaymentMethods = map['restrictPaymentMethods'];
     createCustomer = map['createCustomer'];
     isTokenPayment = map['isTokenPayment'];
-    paymentIntent = map['paymentIntent'] == null ? null : PaymentIntent.fromMap(
-        map['paymentIntent']);
-    paymentMethod = map['paymentMethod'] == null ? null : PaymentMethod.fromMap(
-        map['paymentMethod']);
-    statementDescriptor =
-    map['statementDescriptor'] == null ? null : StatementDescriptor.fromMap(
-        map['statementDescriptor']);
-    transactions = List<Transaction>.from(
-        map['transactions'].map((x) => Transaction.fromMap(x)));
+    paymentIntent = map['paymentIntent'] == null
+        ? null
+        : PaymentIntent.fromMap(map['paymentIntent']);
+    paymentMethod = map['paymentMethod'] == null
+        ? null
+        : PaymentMethod.fromMap(map['paymentMethod']);
+    statementDescriptor = map['statementDescriptor'] == null
+        ? null
+        : StatementDescriptor.fromMap(map['statementDescriptor']);
+    transactions = map['transactions'] == null
+        ? null
+        : List<Transaction>.from(
+            map['transactions'].map((x) => Transaction.fromMap(x)));
+    integrationType = map['integrationType'];
+    items = map['items'];
+    summary = map['summary'] == null ? null : Summary.fromMap(map['summary']);
   }
 
   @override
   String toString() {
-    return 'Order{amount: $amount, tipAmount: $tipAmount, convenienceFeeAmount: $convenienceFeeAmount, totalAmount: $totalAmount, totalAuthorizedAmount: $totalAuthorizedAmount, totalCapturedAmount: $totalCapturedAmount, totalRefundedAmount: $totalRefundedAmount, orderId: $orderId, currency: $currency, language: $language, detailedStatus: $detailedStatus, status: $status, threeDSecureId: $threeDSecureId, merchantId: $merchantId, merchantPublicKey: $merchantPublicKey, parentOrderId: $parentOrderId, merchantReferenceId: $merchantReferenceId, callbackUrl: $callbackUrl, customerEmail: $customerEmail, returnUrl: $returnUrl, tokenId: $tokenId, initiatedBy: $initiatedBy, agreementId: $agreementId, agreementType: $agreementType, paymentOperation: $paymentOperation, custom: $custom, paymentMethods: $paymentMethods, platform: $platform, description: $description, customerReferenceId: $customerReferenceId, customerId: $customerId, recurrence: $recurrence, createdDate: $createdDate, createdBy: $createdBy, updatedDate: $updatedDate, updatedBy: $updatedBy, billingAddress: $billingAddress, shippingAddress: $shippingAddress, cardOnFile: $cardOnFile, setDefaultPaymentMethod: $setDefaultPaymentMethod, restrictPaymentMethods: $restrictPaymentMethods, createCustomer: $createCustomer, isTokenPayment: $isTokenPayment, paymentIntent: $paymentIntent, paymentMethod: $paymentMethod, statementDescriptor: $statementDescriptor, transactions: $transactions}';
+    return 'Order${toMap()}';
   }
 
   @override
   Map<String, dynamic> toMap() {
     return {
+      "orderId": orderId,
       "amount": amount,
       "tipAmount": tipAmount,
       "convenienceFeeAmount": convenienceFeeAmount,
@@ -119,7 +219,6 @@ class Order {
       "totalAuthorizedAmount": totalAuthorizedAmount,
       "totalCapturedAmount": totalCapturedAmount,
       "totalRefundedAmount": totalRefundedAmount,
-      "orderId": orderId,
       "currency": currency,
       "language": language,
       "detailedStatus": detailedStatus,
@@ -155,11 +254,17 @@ class Order {
       "restrictPaymentMethods": restrictPaymentMethods,
       "createCustomer": createCustomer,
       "isTokenPayment": isTokenPayment,
+      "orderStatus": orderStatus,
+      "paymentIntentId": paymentIntentId,
       "paymentIntent": paymentIntent?.toMap(),
       "paymentMethod": paymentMethod?.toMap(),
       "statementDescriptor": statementDescriptor?.toMap(),
-      "transactions": (transactions != null) ? transactions?.map((v) =>
-          v.toMap()).toList() : null
+      "transactions": (transactions != null)
+          ? transactions?.map((v) => v.toMap()).toList()
+          : null,
+      "integrationType": integrationType,
+      "items": items,
+      "summary": summary?.toMap(),
     };
   }
 }

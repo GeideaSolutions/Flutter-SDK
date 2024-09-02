@@ -4,7 +4,7 @@ import 'package:geideapay/api/request/initiate_authentication_request_body.dart'
 import 'package:geideapay/api/request/pay_direct_request_body.dart';
 import 'package:geideapay/api/request/payer_authentication_request_body.dart';
 import 'package:geideapay/common/utils.dart';
-import 'package:geideapay/geideapay.dart';
+import 'package:geideapay/models/card.dart';
 import 'package:geideapay/models/address.dart';
 import 'package:geideapay/models/appearance.dart';
 import 'package:geideapay/models/deviceIdentification.dart';
@@ -76,6 +76,7 @@ class CheckoutRequestBody extends BaseRequestBody {
       Utils.generateSignature(publicKey, amount, currency, merchantReferenceID,
           apiPassword, timeStamp),
       callbackUrl: callbackUrl,
+      returnUrl: returnUrl,
       cardOnFile: cardOnFile,
       paymentIntentId: paymentIntentId,
       paymentOperation: paymentOperation,
