@@ -63,13 +63,10 @@ class Order {
 
   List<Transaction>? transactions;
 
-<<<<<<< HEAD
   dynamic integrationType, items;
 
   Summary? summary;
 
-=======
->>>>>>> 445f820785e75cf2f3e22ac161827e3eab9d3222
   Order({
     this.amount,
     this.tipAmount,
@@ -120,12 +117,9 @@ class Order {
     this.transactions,
     this.orderStatus,
     this.paymentIntentId,
-<<<<<<< HEAD
     this.integrationType,
     this.items,
     this.summary,
-=======
->>>>>>> 445f820785e75cf2f3e22ac161827e3eab9d3222
   });
 
   Order.fromMap(Map<String, dynamic> map) {
@@ -204,12 +198,9 @@ class Order {
         ? null
         : List<Transaction>.from(
             map['transactions'].map((x) => Transaction.fromMap(x)));
-<<<<<<< HEAD
     integrationType = map['integrationType'];
     items = map['items'];
     summary = map['summary'] == null ? null : Summary.fromMap(map['summary']);
-=======
->>>>>>> 445f820785e75cf2f3e22ac161827e3eab9d3222
   }
 
   @override
@@ -270,14 +261,10 @@ class Order {
       "statementDescriptor": statementDescriptor?.toMap(),
       "transactions": (transactions != null)
           ? transactions?.map((v) => v.toMap()).toList()
-<<<<<<< HEAD
           : null,
       "integrationType": integrationType,
       "items": items,
       "summary": summary?.toMap(),
-=======
-          : null
->>>>>>> 445f820785e75cf2f3e22ac161827e3eab9d3222
     };
   }
 }

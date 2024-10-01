@@ -1,13 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter/services.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class HPPCheckout extends StatefulWidget {
-  const HPPCheckout({Key? key,
-    required this.hppURL,
-    required this.sessionId,
-    required this.returnURL})
+  const HPPCheckout(
+      {Key? key,
+      required this.hppURL,
+      required this.sessionId,
+      required this.returnURL})
       : super(key: key);
 
   final String hppURL;
@@ -19,27 +20,55 @@ class HPPCheckout extends StatefulWidget {
 }
 
 class HPPCheckoutState extends State<HPPCheckout> {
-
-  InAppWebViewController? webViewController;
-  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-          javaScriptEnabled: true,
-          javaScriptCanOpenWindowsAutomatically: true));
-
+  late final WebViewController _controller;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..addJavaScriptChannel('Toaster', onMessageReceived: (message) {
+        // ignore: deprecated_member_use
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message.message)),
+        );
+      })
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {},
+          onPageStarted: (String url) {
+            setState(() {
+              _isLoading = true;
+            });
+          },
+          onPageFinished: (String url) {
+            setState(() {
+              _isLoading = false;
+            });
+          },
+          onWebResourceError: (WebResourceError error) {
+            print('WebResourceError: $error');
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            print('allowing navigation to $request');
+            if (request.url.toString().startsWith(widget.returnURL ?? "")) {
+              Navigator.pop(context, Uri.parse(request.url).queryParameters);
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse("${widget.hppURL}${widget.sessionId}"));
   }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Theme
-          .of(context)
-          .appBarTheme
-          .backgroundColor,
+      statusBarColor: Theme.of(context).appBarTheme.backgroundColor,
     ));
 
     return Scaffold(
@@ -49,44 +78,7 @@ class HPPCheckoutState extends State<HPPCheckout> {
       ),
       body: Stack(
         children: [
-          InAppWebView(
-            initialUrlRequest: URLRequest(
-                url: Uri.parse("${widget.hppURL}${widget.sessionId}")),
-            initialOptions: options,
-            onWebViewCreated: (controller) {
-              webViewController = controller;
-            },
-            shouldOverrideUrlLoading: (controller, navigationAction) {
-              return Future.value(NavigationActionPolicy.ALLOW);
-            },
-            onLoadError: (controller, url, code, message) {},
-            onLoadHttpError: (controller, url, statusCode, description) {},
-            onUpdateVisitedHistory: (controller, url, androidIsReload) async {
-              if (url.toString().startsWith(widget.returnURL ?? "")) {
-                Navigator.pop(context, url?.queryParameters);
-              }
-            },
-            onConsoleMessage: (controller, consoleMessage) {},
-            // onProgressChanged: (){
-            //   if (progress >= 100) {
-            //     setState(() {
-            //       _isLoading = true;
-            //     });
-            //   }else{
-            //     _isLoading = false;
-            //   }
-            // },
-            onLoadStart: (controller, url) {
-              setState(() {
-                _isLoading = true;
-              });
-            },
-            onLoadStop: (controller, url) {
-              setState(() {
-                _isLoading = false;
-              });
-            },
-          ),
+          WebViewWidget(controller: _controller),
           if (_isLoading)
             Container(
               color: Colors.black.withOpacity(0.5),

@@ -232,7 +232,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   ///
   Widget _buildFrontContainer() {
     final TextStyle defaultTextStyle =
-        Theme.of(context).textTheme.headline6!.merge(
+        Theme.of(context).textTheme.titleLarge!.merge(
               const TextStyle(
                 color: Colors.white,
                 fontFamily: 'halter',
@@ -343,7 +343,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   ///
   Widget _buildBackContainer() {
     final TextStyle defaultTextStyle =
-        Theme.of(context).textTheme.headline6!.merge(
+        Theme.of(context).textTheme.titleLarge!.merge(
               const TextStyle(
                 color: Colors.black,
                 fontFamily: 'halter',

@@ -229,7 +229,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                       ),
-                                      primary:
+                                      backgroundColor:
                                           widget.checkoutOptions.payButtonColor,
                                     ),
                                     child: Container(
@@ -282,7 +282,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                       ),
-                                      primary: widget
+                                      backgroundColor: widget
                                           .checkoutOptions.cancelButtonColor,
                                     ),
                                     child: Container(
@@ -850,7 +850,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                       ),
-                                      primary:
+                                      backgroundColor:
                                           widget.checkoutOptions.payButtonColor,
                                     ),
                                     child: Container(
@@ -911,7 +911,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                       ),
-                                      primary: widget
+                                      backgroundColor: widget
                                           .checkoutOptions.cancelButtonColor,
                                     ),
                                     child: Container(
