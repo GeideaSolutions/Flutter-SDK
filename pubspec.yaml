@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.5
-  intl: ^0.18.1
+  http: ^1.2.0
+  intl: ^0.19.0
   meta: ^1.7.0
   async: ^2.8.2
   html: ^0.15.3
