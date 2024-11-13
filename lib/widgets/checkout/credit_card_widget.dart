@@ -612,7 +612,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
           break;
 
         default:
-          icon = Container(
+          icon = const SizedBox(
             height: 48,
             width: 48,
           );

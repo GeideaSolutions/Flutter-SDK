@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 class CheckoutRequestBody extends BaseRequestBody {
   CheckoutOptions checkoutOptions;
 
-  PaymentCard? _paymentCard;
+  final PaymentCard? _paymentCard;
   late double amount;
   late String currency;
 
@@ -176,6 +176,7 @@ class CheckoutRequestBody extends BaseRequestBody {
           (key, value) => value == null || (value is String && value.isEmpty));
   }
 
+  @override
   toString() {
     return 'CheckoutRequestBody{amount: $amount, currency: $currency, callbackUrl: $callbackUrl, returnUrl: $returnUrl, merchantReferenceID: $merchantReferenceID, cardOnFile: $cardOnFile, paymentOperation: $paymentOperation, billingAddress: $billingAddress, shippingAddress: $shippingAddress, customerEmail: $customerEmail, paymentIntentId: $paymentIntentId}';
   }

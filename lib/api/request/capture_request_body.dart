@@ -6,6 +6,7 @@ class CaptureRequestBody extends PostPayOperationRequestBody {
   CaptureRequestBody(String orderId, {this.callbackUrl_, this.paymentIntentId_})
       :super(orderId, callbackUrl: callbackUrl_, paymentIntentId: paymentIntentId_);
 
+  @override
   toString () {
     return 'CaptureRequestBody{callbackUrl: $callbackUrl_, paymentIntentId: $paymentIntentId_}';
   }

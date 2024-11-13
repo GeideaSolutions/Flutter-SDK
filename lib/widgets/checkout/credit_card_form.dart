@@ -120,7 +120,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
     createCreditCardModel();
 
-    print(widget.cardNumberDecoration.hintStyle);
+    debugPrint(widget.cardNumberDecoration.hintStyle.toString());
     cardNumberDecoration1 = new InputDecoration(
       labelText: widget.cardNumberDecoration.labelText,
       hintText: widget.cardNumberDecoration.hintText,
@@ -129,7 +129,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
       focusedBorder: widget.cardNumberDecoration.focusedBorder,
       enabledBorder: widget.cardNumberDecoration.enabledBorder,
     );
-    print(cardNumberDecoration1.hintStyle);
+    debugPrint(cardNumberDecoration1.hintStyle.toString());
 
     onCreditCardModelChange = widget.onCreditCardModelChange;
 

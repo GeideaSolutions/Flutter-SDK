@@ -21,14 +21,14 @@ class Appearance extends BaseRequestBody {
 
   Appearance.fromJson(Map<String, dynamic> json) {
     merchant = json['merchant'] != null
-        ? new Merchant.fromJson(json['merchant'])
+        ? Merchant.fromJson(json['merchant'])
         : null;
     showEmail = json['showEmail'];
     showAddress = json['showAddress'];
     showPhone = json['showPhone'];
     receiptPage = json['receiptPage'];
     styles =
-        json['styles'] != null ? new Styles.fromJson(json['styles']) : null;
+        json['styles'] != null ? Styles.fromJson(json['styles']) : null;
   }
 
   @override

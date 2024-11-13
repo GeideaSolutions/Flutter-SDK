@@ -63,7 +63,7 @@ class QRCodeScreenState extends State<QRCodeScreen> {
           backgroundColor: widget.backgroundColor,
           body: Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(20),
+              padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,

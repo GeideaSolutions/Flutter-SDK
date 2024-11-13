@@ -104,11 +104,11 @@ class PaymentCard {
   }
 
   PaymentCard.empty() {
-    this.expiryYear = 0;
-    this.expiryMonth = 0;
-    this._number = '';
-    this.name = '';
-    this.cvc = '';
+    expiryYear = 0;
+    expiryMonth = 0;
+    _number = '';
+    name = '';
+    cvc = '';
   }
 
   /// Validates the CVC or CVV of the card
@@ -126,7 +126,7 @@ class PaymentCard {
   /// Validates the CVC or CVV of a card.
   /// Returns true if CVC is valid and false otherwise
   bool validCVC(String? cardCvc) {
-    cardCvc ??= this.cvc;
+    cardCvc ??= cvc;
 
     if (cardCvc == null || cardCvc.trim().isEmpty) return false;
 
@@ -148,7 +148,7 @@ class PaymentCard {
 
     // Remove all non digits
     var formattedNumber =
-    cardNumber!.trim().replaceAll(new RegExp(r'[^0-9]'), '');
+    cardNumber!.trim().replaceAll(RegExp(r'[^0-9]'), '');
 
     // Verve card needs no other validation except it matched pattern
     if (CardType.fullPatternVerve.hasMatch(formattedNumber)) {
@@ -230,9 +230,9 @@ abstract class CardType {
   static const String unknown = "Unknown";
 
   // Length for some cards
-  static final int maxLengthNormal = 16;
-  static final int maxLengthAmericanExpress = 15;
-  static final int maxLengthDinersClub = 14;
+  static const int maxLengthNormal = 16;
+  static const int maxLengthAmericanExpress = 15;
+  static const int maxLengthDinersClub = 14;
 
   // Regular expressions to match complete numbers of the card
   //source of these regex patterns http://stackoverflow.com/questions/72768/how-do-you-detect-credit-card-type-based-on-number

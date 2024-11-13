@@ -39,7 +39,7 @@ class _EGY_PROD extends ServerEnvironmentModel {
 
 class _EGY_PREPROD extends ServerEnvironmentModel {
   _EGY_PREPROD()
-      : super('EGY-PREPROD', 'https://api-merchant.staging.geidea.net',
+      : super('EGY-PREPROD', 'https://api.gd-pprod-infra.net',
             'https://www.gd-pprod-infra.net/hpp/checkout/?');
 }
 
@@ -51,7 +51,7 @@ class _UAE_PROD extends ServerEnvironmentModel {
 
 class _UAE_PREPROD extends ServerEnvironmentModel {
   _UAE_PREPROD()
-      : super('UAE-PREPROD', 'https://api-merchant.staging.geidea.ae',
+      : super('UAE-PREPROD', 'https://api.staging.geidea.ae',
             'https://www.staging.geidea.ae/hpp/checkout/?');
 }
 
@@ -63,6 +63,6 @@ class _KSA_PROD extends ServerEnvironmentModel {
 
 class _KSA_PREPROD extends ServerEnvironmentModel {
   _KSA_PREPROD()
-      : super('KSA-PREPROD', 'https://api-ksamerchant.staging.geidea.net',
+      : super('KSA-PREPROD', 'https://api.gd-pprod-infra.net',
             'https://www.gd-pprod-infra.net/hpp/checkout/?');
 }

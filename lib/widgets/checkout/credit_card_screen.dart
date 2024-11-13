@@ -1,20 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geideapay/common/card_utils.dart';
 import 'package:geideapay/geideapay.dart';
-import 'package:geideapay/widgets/checkout/checkout_options.dart';
 
 import 'package:geideapay/widgets/checkout/flutter_credit_card.dart';
-import 'package:geideapay/widgets/checkout/credit_card_brand.dart';
-import 'package:geideapay/widgets/checkout/credit_card_form.dart';
-import 'package:geideapay/widgets/checkout/credit_card_model.dart';
-import 'package:geideapay/widgets/checkout/credit_card_widget.dart'
-    as credit_card_widget;
 import '../../common/credit_card_type_detector.dart';
-import '../../models/address.dart';
 
 const Map<CreditCardType, String?> CreditCardTypeIconAsset =
     <CreditCardType, String?>{
@@ -252,7 +243,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                     ),
                                     onPressed: () {
                                       if (formKey.currentState!.validate()) {
-                                        print('valid!');
+                                        debugPrint('valid!');
                                         setState(
                                             () => _checkoutInProgress = true);
                                         Future.delayed(
@@ -269,7 +260,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                           Navigator.pop(context, 'OK');
                                         });
                                       } else {
-                                        print('invalid!');
+                                        debugPrint('invalid!');
                                       }
                                     },
                                   ),
@@ -305,7 +296,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image(
@@ -372,9 +363,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                   hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
                   labelStyle:
                       TextStyle(color: widget.checkoutOptions.textColor),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  border: OutlineInputBorder(
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
                 ),
@@ -397,9 +388,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                   hintStyle: TextStyle(color: widget.checkoutOptions.textColor),
                   labelStyle:
                       TextStyle(color: widget.checkoutOptions.textColor),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                  border: OutlineInputBorder(
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 10.0),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   ),
                 ),
@@ -409,7 +400,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(
                 children: [
                   Expanded(
@@ -427,9 +418,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                             TextStyle(color: widget.checkoutOptions.textColor),
                         labelStyle:
                             TextStyle(color: widget.checkoutOptions.textColor),
-                        contentPadding: EdgeInsets.symmetric(
+                        contentPadding: const EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 10.0),
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(5.0)),
                         ),
                       ),
@@ -458,9 +449,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                 color: widget.checkoutOptions.textColor),
                             labelStyle: TextStyle(
                                 color: widget.checkoutOptions.textColor),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 10.0),
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5.0)),
                             ),
@@ -507,9 +498,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                           TextStyle(color: widget.checkoutOptions.textColor),
                       labelStyle:
                           TextStyle(color: widget.checkoutOptions.textColor),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10.0),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       ),
                     ),
@@ -533,9 +524,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                           TextStyle(color: widget.checkoutOptions.textColor),
                       labelStyle:
                           TextStyle(color: widget.checkoutOptions.textColor),
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10.0),
-                      border: OutlineInputBorder(
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       ),
                     ),
@@ -545,7 +536,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Row(
                     children: [
                       Expanded(
@@ -563,9 +554,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                 color: widget.checkoutOptions.textColor),
                             labelStyle: TextStyle(
                                 color: widget.checkoutOptions.textColor),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 vertical: 10.0, horizontal: 10.0),
-                            border: OutlineInputBorder(
+                            border: const OutlineInputBorder(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5.0)),
                             ),
@@ -595,9 +586,9 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                     color: widget.checkoutOptions.textColor),
                                 labelStyle: TextStyle(
                                     color: widget.checkoutOptions.textColor),
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 10.0),
-                                border: OutlineInputBorder(
+                                border: const OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5.0)),
                                 ),
@@ -616,11 +607,13 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   }
 
   void setAddressField(bool isBilling, String field, String value) {
-    if (isBilling && widget.checkoutOptions.billingAddress == null)
-      widget.checkoutOptions.billingAddress = new Address();
+    if (isBilling && widget.checkoutOptions.billingAddress == null) {
+      widget.checkoutOptions.billingAddress = Address();
+    }
 
-    if (!isBilling && widget.checkoutOptions.shippingAddress == null)
-      widget.checkoutOptions.shippingAddress = new Address();
+    if (!isBilling && widget.checkoutOptions.shippingAddress == null) {
+      widget.checkoutOptions.shippingAddress = Address();
+    }
 
     if (field == "countryCode") {
       isBilling
@@ -642,59 +635,31 @@ class CreditCardScreenState extends State<CreditCardScreen> {
   }
 
   String? getAddressField(bool isBilling, String field) {
-    var billingAddress = widget.checkoutOptions.billingAddress != null
-        ? widget.checkoutOptions.billingAddress
-        : new Address();
-    var shippingAddress = widget.checkoutOptions.shippingAddress != null
-        ? widget.checkoutOptions.shippingAddress
-        : new Address();
+    var billingAddress = widget.checkoutOptions.billingAddress ?? Address();
+    var shippingAddress = widget.checkoutOptions.shippingAddress ?? Address();
     if (field == "countryCode") {
       if (isBilling) {
-        if (billingAddress != null)
-          return billingAddress.countryCode;
-        else
-          return "";
+        return billingAddress.countryCode;
       } else {
-        if (shippingAddress != null)
-          return shippingAddress.countryCode;
-        else
-          return "";
+        return shippingAddress.countryCode;
       }
     } else if (field == "street") {
       if (isBilling) {
-        if (billingAddress != null)
-          return billingAddress.street;
-        else
-          return "";
+        return billingAddress.street;
       } else {
-        if (shippingAddress != null)
-          return shippingAddress.street;
-        else
-          return "";
+        return shippingAddress.street;
       }
     } else if (field == "city") {
       if (isBilling) {
-        if (billingAddress != null)
-          return billingAddress.city;
-        else
-          return "";
+        return billingAddress.city;
       } else {
-        if (shippingAddress != null)
-          return shippingAddress.city;
-        else
-          return "";
+        return shippingAddress.city;
       }
     } else if (field == "postCode") {
       if (isBilling) {
-        if (billingAddress != null)
-          return billingAddress.postCode;
-        else
-          return "";
+        return billingAddress.postCode;
       } else {
-        if (shippingAddress != null)
-          return shippingAddress.postCode;
-        else
-          return "";
+        return shippingAddress.postCode;
       }
     } else {
       return "";
@@ -881,7 +846,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                     ),
                                     onPressed: () {
                                       if (formKey.currentState!.validate()) {
-                                        print('valid!');
+                                        debugPrint('valid!');
                                         setState(
                                             () => _checkoutInProgress = true);
                                         Future.delayed(
@@ -898,7 +863,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                           Navigator.pop(context, 'OK');
                                         });
                                       } else {
-                                        print('invalid!');
+                                        debugPrint('invalid!');
                                       }
                                     },
                                   ),
@@ -934,7 +899,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image(

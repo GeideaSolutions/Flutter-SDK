@@ -5,7 +5,6 @@ import 'package:geideapay/api/request/direct_session_request_body.dart';
 import 'package:geideapay/api/request/request_to_pay_request_body.dart';
 import 'package:geideapay/api/response/base64_image_api_response.dart';
 import 'package:geideapay/api/response/direct_session_api_response.dart';
-import 'package:geideapay/api/response/other_response.dart';
 import 'package:geideapay/api/response/payment_intent_api_response.dart';
 import 'package:geideapay/api/response/payment_notification_api_response.dart';
 import 'package:geideapay/api/response/request_pay_api_response.dart';
@@ -190,7 +189,7 @@ class GeideapayPlugin {
           authenticationApiResponse: authenticationApiResponse,
         );
       } catch (e) {
-        throw e;
+        rethrow;
       }
     } else {
       return OrderApiResponse(
@@ -316,7 +315,7 @@ class GeideapayPlugin {
       required CheckoutOptions checkoutOptions}) async {
     _performChecks();
 
-    final _geideapay =
+    final geideaPay =
         _Geideapay(publicKey, apiPassword, serverEnvironmentModel!.apiBaseUrl);
 
     CheckoutRequestBody checkoutRequestBodyOfQRCode =
@@ -326,7 +325,7 @@ class GeideapayPlugin {
         publicKey, apiPassword);
 
     DirectSessionApiResponse directSessionApiResponse =
-        await _geideapay.createSession(
+        await geideaPay.createSession(
             directSessionRequestBody:
                 checkoutRequestBodyOfQRCode.directSessionRequestBody);
     Utils.printLog(directSessionApiResponse);
@@ -335,7 +334,7 @@ class GeideapayPlugin {
     }
 
     Base64ImageApiResponse base64imageApiResponse =
-        await _geideapay.generateQRCodeImage(
+        await geideaPay.generateQRCodeImage(
             base64imageRequestBody: Base64ImageRequestBody(
                 directSessionApiResponse.session?.merchantPublicKey,
                 directSessionApiResponse.session?.id));
@@ -345,7 +344,7 @@ class GeideapayPlugin {
       throw (base64imageApiResponse.detailedResponseMessage!);
     }
 
-    RequestPayApiResponse requestPayApiResponse = await _geideapay.requestToPay(
+    RequestPayApiResponse requestPayApiResponse = await geideaPay.requestToPay(
         requestToPayRequestBody: RequestToPayRequestBody(
       checkoutOptions.qrConfiguration?.phoneNumber,
       directSessionApiResponse.session?.merchantPublicKey,
@@ -391,7 +390,7 @@ class GeideapayPlugin {
                             true)) &&
                 shouldCheckOrderId) {
               shouldCheckOrderId = false;
-              paymentIntentApiResponse = await _geideapay.getOrderId(
+              paymentIntentApiResponse = await geideaPay.getOrderId(
                   paymentIntentId:
                       base64imageApiResponse.paymentIntentId.toString());
               Utils.printLog(paymentIntentApiResponse);
@@ -402,7 +401,7 @@ class GeideapayPlugin {
                     0 &&
                 shouldCheckOrderDetail) {
               shouldCheckOrderDetail = false;
-              orderDetailResponse = await _geideapay.getOrderDetail(
+              orderDetailResponse = await geideaPay.getOrderDetail(
                   merchantPublicKey: paymentIntentApiResponse
                           ?.paymentIntent?.merchantPublicKey ??
                       "",
@@ -413,7 +412,7 @@ class GeideapayPlugin {
 
               if (orderDetailResponse.responseCode == '000') {
                 PaymentNotificationApiResponse paymentNotificationApiResponse =
-                    await _geideapay.meezaPaymentNotification(
+                    await geideaPay.meezaPaymentNotification(
                         postPayOperationRequestBody:
                             PostPayOperationRequestBody(paymentIntentApiResponse
                                     ?.paymentIntent?.orders?.first.orderId ??
@@ -439,7 +438,7 @@ class GeideapayPlugin {
       required CheckoutOptions checkoutOptions}) async {
     _performChecks();
 
-    final _geideapay =
+    final geideaPay =
         _Geideapay(publicKey, apiPassword, serverEnvironmentModel!.apiBaseUrl);
 
     CheckoutRequestBody checkoutRequestBodyOfQRCode =
@@ -449,10 +448,10 @@ class GeideapayPlugin {
         publicKey, apiPassword);
 
     DirectSessionApiResponse directSessionApiResponse =
-        await _geideapay.createSession(
+        await geideaPay.createSession(
             directSessionRequestBody:
                 checkoutRequestBodyOfQRCode.directSessionRequestBody);
-    print(directSessionApiResponse);
+    debugPrint(directSessionApiResponse.toString());
     if (directSessionApiResponse.session == null) {
       throw (directSessionApiResponse.detailedResponseMessage!);
     }
@@ -545,28 +544,28 @@ class _Geideapay {
           payDirectRequestBody: checkoutRequestBody.payDirectRequestBody);
       Utils.printLog(orderApiResponse);
 
-      if (checkoutRequestBody.returnUrl != null) {
-        Uri mainReturnURI = Uri.parse(checkoutRequestBody.returnUrl.toString());
-
-        Map<String, String> mainReturnUriParam = {};
-        mainReturnUriParam.addAll(mainReturnURI.queryParameters);
-        mainReturnUriParam
-            .addAll({"response": json.encode(orderApiResponse.toMap())});
-
-        String finalReturnUrl = Path.join(mainReturnURI.toString(),
-            orderApiResponse.responseMessage ?? "Failed");
-
-        Uri returnUrlURI = Uri.parse(finalReturnUrl)
-            .replace(queryParameters: mainReturnUriParam);
-
-        if (!await launchUrl(returnUrlURI,
-            mode: LaunchMode.externalApplication)) {
-          Utils.printLog('Could not launch');
-        }
-      }
+      // if (checkoutRequestBody.returnUrl != null) {
+      //   Uri mainReturnURI = Uri.parse(checkoutRequestBody.returnUrl.toString());
+      //
+      //   Map<String, String> mainReturnUriParam = {};
+      //   mainReturnUriParam.addAll(mainReturnURI.queryParameters);
+      //   mainReturnUriParam
+      //       .addAll({"response": json.encode(orderApiResponse.toMap())});
+      //
+      //   String finalReturnUrl = Path.join(mainReturnURI.toString(),
+      //       orderApiResponse.responseMessage ?? "Failed");
+      //
+      //   Uri returnUrlURI = Uri.parse(finalReturnUrl)
+      //       .replace(queryParameters: mainReturnUriParam);
+      //
+      //   if (!await launchUrl(returnUrlURI,
+      //       mode: LaunchMode.externalApplication)) {
+      //     Utils.printLog('Could not launch');
+      //   }
+      // }
       return orderApiResponse;
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 

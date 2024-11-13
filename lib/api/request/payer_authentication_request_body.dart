@@ -1,6 +1,5 @@
 import 'package:geideapay/api/request/base/base_request_body.dart';
 import 'package:geideapay/geideapay.dart';
-import 'package:geideapay/models/deviceIdentification.dart';
 
 class PayerAuthenticationRequestBody extends BaseRequestBody {
   final String? sessionId;

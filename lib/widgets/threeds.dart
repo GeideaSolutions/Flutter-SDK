@@ -35,21 +35,21 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
             // Update loading bar.
           },
           onPageStarted: (String url) {
-            print('Page started loading: $url, ${widget.returnURL}');
+            debugPrint('Page started loading: $url, ${widget.returnURL}');
             if (url.startsWith(widget.returnURL ?? "")) {
               Navigator.of(context).pop();
             }
           },
           onPageFinished: (String url) {},
           onWebResourceError: (WebResourceError error) {
-            print('WebResourceError: $error');
+            debugPrint('WebResourceError: $error');
 
             if (Platform.isIOS) {
               Navigator.of(context).pop();
             }
           },
           onNavigationRequest: (NavigationRequest request) {
-            print('allowing navigation to $request');
+            debugPrint('allowing navigation to $request');
             if (request.url.startsWith(widget.returnURL ?? "")) {
               Navigator.of(context).pop();
               return NavigationDecision.prevent;
@@ -68,7 +68,7 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("3DS")),
+      appBar: AppBar(title: const Text("3DS")),
       body: Builder(builder: (BuildContext context) {
         return WebViewWidget(
           controller: _controller,

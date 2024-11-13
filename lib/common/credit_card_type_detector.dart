@@ -145,7 +145,7 @@ RegExp _mada = RegExp(r'^((((400861)|(409201)|(410685)|(417633)|(428331)|(42867[
 /// This function determines the CC type based on the cardPatterns
 CreditCardType detectCCType(String ccNumStr) {
   CreditCardType cardType = CreditCardType.unknown;
-  ccNumStr = ccNumStr.replaceAll(_whiteSpace, '');;
+  ccNumStr = ccNumStr.replaceAll(_whiteSpace, '');
 
   if (ccNumStr.length < 6) {
     return cardType;

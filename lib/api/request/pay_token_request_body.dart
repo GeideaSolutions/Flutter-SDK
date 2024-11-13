@@ -1,7 +1,6 @@
 import 'package:geideapay/api/request/base/base_request_body.dart';
 
 class PayTokenRequestBody extends BaseRequestBody {
-
   final String _amount;
   final String? _currency;
   final String _tokenId;
@@ -25,10 +24,13 @@ class PayTokenRequestBody extends BaseRequestBody {
 
     params[BaseRequestBody.fieldCallbackUrl] = callbackUrl;
 
-    return params..removeWhere((key, value) => value == null || (value is String && value.isEmpty));
+    return params
+      ..removeWhere(
+          (key, value) => value == null || (value is String && value.isEmpty));
   }
+
+  @override
   toString() {
     return 'PayTokenRequestBody{_amount: $_amount, _currency: $_currency, _tokenId: $_tokenId, _initiatedBy: $_initiatedBy, _agreementId: $_agreementId, callbackUrl: $callbackUrl}';
   }
-  
 }

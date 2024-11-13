@@ -75,30 +75,30 @@ class MeezaDetail {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['transactionId'] = this.transactionId;
-    data['meezaTransactionId'] = this.meezaTransactionId;
-    data['type'] = this.type;
-    data['transactionTimeStamp'] = this.transactionTimeStamp;
-    data['adviceId'] = this.adviceId;
-    data['senderId'] = this.senderId;
-    data['senderName'] = this.senderName;
-    data['senderAddress'] = this.senderAddress;
-    data['receiverId'] = this.receiverId;
-    data['receiverName'] = this.receiverName;
-    data['receiverScheme'] = this.receiverScheme;
-    data['receiverAddress'] = this.receiverAddress;
-    data['amount'] = this.amount;
-    data['currency'] = this.currency;
-    data['description'] = this.description;
-    data['responseCode'] = this.responseCode;
-    data['responseDescription'] = this.responseDescription;
-    data['interchange'] = this.interchange;
-    data['interchangeAction'] = this.interchangeAction;
-    data['reference1'] = this.reference1;
-    data['reference2'] = this.reference2;
-    data['tips'] = this.tips;
-    data['convenienceFee'] = this.convenienceFee;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['transactionId'] = transactionId;
+    data['meezaTransactionId'] = meezaTransactionId;
+    data['type'] = type;
+    data['transactionTimeStamp'] = transactionTimeStamp;
+    data['adviceId'] = adviceId;
+    data['senderId'] = senderId;
+    data['senderName'] = senderName;
+    data['senderAddress'] = senderAddress;
+    data['receiverId'] = receiverId;
+    data['receiverName'] = receiverName;
+    data['receiverScheme'] = receiverScheme;
+    data['receiverAddress'] = receiverAddress;
+    data['amount'] = amount;
+    data['currency'] = currency;
+    data['description'] = description;
+    data['responseCode'] = responseCode;
+    data['responseDescription'] = responseDescription;
+    data['interchange'] = interchange;
+    data['interchangeAction'] = interchangeAction;
+    data['reference1'] = reference1;
+    data['reference2'] = reference2;
+    data['tips'] = tips;
+    data['convenienceFee'] = convenienceFee;
     return data;
   }
 }

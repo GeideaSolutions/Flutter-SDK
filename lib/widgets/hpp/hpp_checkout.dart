@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -50,10 +49,10 @@ class HPPCheckoutState extends State<HPPCheckout> {
             });
           },
           onWebResourceError: (WebResourceError error) {
-            print('WebResourceError: $error');
+            debugPrint('WebResourceError: $error');
           },
           onNavigationRequest: (NavigationRequest request) {
-            print('allowing navigation to $request');
+            debugPrint('allowing navigation to $request');
             if (request.url.toString().startsWith(widget.returnURL ?? "")) {
               Navigator.pop(context, Uri.parse(request.url).queryParameters);
               return NavigationDecision.prevent;
@@ -73,7 +72,7 @@ class HPPCheckoutState extends State<HPPCheckout> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size(0.0, 0.0),
+        preferredSize: const Size(0.0, 0.0),
         child: Container(),
       ),
       body: Stack(
