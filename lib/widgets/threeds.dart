@@ -41,10 +41,10 @@ class _ThreeDSPageState extends State<ThreeDSPage> {
             }
           },
           onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {
+          onWebResourceError: (WebResourceError error) async {
             debugPrint('WebResourceError: $error');
-
-            if (Platform.isIOS) {
+            await Future.delayed(const Duration(seconds: 2));
+            if (mounted && Platform.isIOS) {
               Navigator.of(context).pop();
             }
           },
