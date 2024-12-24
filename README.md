@@ -19,7 +19,7 @@ The Package is available on GitHub.
 dependencies:
   geideapay:
     git:
-      url: https://github.com/payorch/flutter_sdk.git
+      url: https://github.com/GeideaSolutions/Flutter-SDK.git
       ref: main # branch name
 
 ```
