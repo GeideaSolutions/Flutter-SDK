@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:geideapay/widgets/checkout/credit_card_widget.dart';
+
 import 'credit_card_model.dart';
 
 class CreditCardForm extends StatefulWidget {
   CreditCardForm({
-    Key? key,
+    super.key,
     required this.cardNumber,
     required this.expiryYear,
     required this.expiryMonth,
@@ -42,7 +42,7 @@ class CreditCardForm extends StatefulWidget {
     this.isExpiryDateVisible = true,
     this.rtl = false,
     this.onCardEditComplete,
-  }) : super(key: key);
+  });
 
   final String? cardNumber;
   int? expiryMonth, expiryYear;
@@ -105,8 +105,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   void createCreditCardModel() {
     cardNumber = widget.cardNumber!;
-    expiryDate =
-        widget.expiryYear.toString() + "/" + widget.expiryMonth.toString();
+    expiryDate = "${widget.expiryYear}/${widget.expiryMonth}";
     cardHolderName = widget.cardHolderName!;
     cvvCode = widget.cvvCode!;
 
@@ -121,7 +120,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
     createCreditCardModel();
 
     debugPrint(widget.cardNumberDecoration.hintStyle.toString());
-    cardNumberDecoration1 = new InputDecoration(
+    cardNumberDecoration1 = InputDecoration(
       labelText: widget.cardNumberDecoration.labelText,
       hintText: widget.cardNumberDecoration.hintText,
       hintStyle: widget.cardNumberDecoration.hintStyle,

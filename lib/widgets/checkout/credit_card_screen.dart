@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geideapay/common/card_utils.dart';
 import 'package:geideapay/geideapay.dart';
-
 import 'package:geideapay/widgets/checkout/flutter_credit_card.dart';
+
 import '../../common/credit_card_type_detector.dart';
 
 const Map<CreditCardType, String?> CreditCardTypeIconAsset =
@@ -24,10 +24,10 @@ class CreditCardScreen extends StatefulWidget {
   final Function(PaymentCard)? onCardEditComplete;
 
   CreditCardScreen({
-    Key? key,
+    super.key,
     required this.checkoutOptions,
     this.onCardEditComplete,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -226,15 +226,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                     child: Container(
                                       margin: const EdgeInsets.all(12),
                                       child: Text(
-                                        'Pay ' +
-                                            widget.checkoutOptions.amount
-                                                .toString() +
-                                            ' ' +
-                                            (widget.checkoutOptions.currency !=
-                                                    null
-                                                ? widget
-                                                    .checkoutOptions.currency!
-                                                : ''),
+                                        'Pay ${widget.checkoutOptions.amount} ${widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency! : ''}',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -830,14 +822,7 @@ class CreditCardScreenState extends State<CreditCardScreen> {
                                       //   ),
                                       // ),
                                       child: Text(
-                                        (widget.checkoutOptions.currency != null
-                                                ? widget
-                                                    .checkoutOptions.currency!
-                                                : '') +
-                                            'ادفع ' +
-                                            widget.checkoutOptions.amount
-                                                .toString() +
-                                            ' ',
+                                        '${widget.checkoutOptions.currency != null ? widget.checkoutOptions.currency! : ''}ادفع ${widget.checkoutOptions.amount} ',
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
